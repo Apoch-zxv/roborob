@@ -19,7 +19,7 @@ class RoboRob(object):
         self._listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def _load_configuration(self, working_dir):
-        return collections.namedtuple("RoboRobConfig", "host port")(host = "", port = "8888")
+        return collections.namedtuple("RoboRobConfig", "host port")(host = "", port = 8888)
 
     def listen_for_requests(self):
         try:
@@ -62,3 +62,7 @@ class RoboRob(object):
     def single_request_handler(self, sock, data, addr, port):
         self._logger.info("Handling single request from %s : %s", addr, port)
         self._logger.debug("Recieved data: %s", data)
+
+if __name__ == "__main__":
+    roborob = RoboRob("C:\\roborob_output")
+    roborob.listen_for_requests()

@@ -16,7 +16,7 @@ class RoboLogger(object):
         hdlr.setFormatter(formatter)
 
         console = logging.StreamHandler()
-        console.setLevel(logging.INFO)
+        console.setLevel(logging.DEBUG)
 
         RoboLogger.LOGGER.addHandler(console)
         RoboLogger.LOGGER.addHandler(hdlr)
