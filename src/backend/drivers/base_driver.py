@@ -1,7 +1,7 @@
 import inspect
 import collections
 
-DriverArgument = collections.namedtuple("DriverArgument", "name type")
+DriverArgument = collections.namedtuple("DriverArgument", "name real_name type")
 DriverOperation = collections.namedtuple("DriverMethod", "name arguments")
 
 

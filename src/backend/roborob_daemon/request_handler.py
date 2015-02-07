@@ -22,6 +22,28 @@ class RequestHandler(object):
 
         return ServerAllDriversSuccessResponse(names)
 
+    def _find_param_by_name(self, argument_list, param_name):
+        for arg in argument_list:
+            if arg.name == param_name:
+                return arg
+        return None
+
+    def _validate_params(self, method, params):
+        descriptor = method.description
+
+        for param_name, param_value in params.iteritems():
+            arg = self._find_param_by_name(descriptor.arguments, param_name)
+            if arg is None:
+                return False
+        return True
+
+    def _get_callable_params(self, argument_list, params):
+        res = {}
+        for param_key, param_value in params.iteritems():
+            arg = self._find_param_by_name(argument_list, param_key)
+            res[arg.real_name] = param_value
+        return res
+
     def _handle_single_method_request(self, request):
         method = self._driver_container.get_driver_method(request.driver_name, request.method_name)
 
@@ -33,7 +55,7 @@ class RequestHandler(object):
                                           "method expected: %s given: %s" % (method.description, request.params))
 
         try:
-            method(**request.params)
+            method(**self._get_callable_params(method.description.arguments, request.params))
             return ServerExecutionSuccessResponse()
         except Exception, e:
             err_msg = "Failed executing %s %s" % (request.driver_name, request.method_name)
