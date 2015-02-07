@@ -11,8 +11,18 @@ class RequestHandler(object):
             return self._handle_single_method_request(request)
         elif isinstance(request, DriverGetAllDriversRequestMessage):
             return self._handle_get_all_drivers_request(request)
+        elif isinstance(request, DriverGetAllOperationsRequestMessage):
+            return self._handle_get_all_operations_request(request)
 
         return ServerNotSupportedErrorResponse("The request %s is not supported yet !" % type(request))
+
+    def _handle_get_all_operations_request(self, request):
+        names = self._driver_container.get_all_operations()
+
+        if names is None:
+            return ServerInternalErrorResponse("Drivers not initialized")
+
+        return ServerAllOperationsSuccessResponse(names)
 
     def _handle_get_all_drivers_request(self, request):
         names = self._driver_container.get_all_drivers_names()

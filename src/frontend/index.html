@@ -1,40 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>RoboRob</title>
-  <script src="google-blockly/blockly_compressed.js"></script>
-  <script src="google-blockly/blocks_compressed.js"></script>
-  <script src="google-blockly/msg/js/en.js"></script>
-  <style>
-    body {
-      background-color: #fff;
-      font-family: sans-serif;
-    }
-    h1 {
-      font-weight: normal;
-      font-size: 140%;
-    }
-  </style>
+    <meta charset="utf-8">
+    <title>RoboRob</title>
+    <script src="google-blockly/blockly_compressed.js"></script>
+    <script src="google-blockly/blocks_compressed.js"></script>
+    <script src="google-blockly/msg/js/en.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <style>
+        body {
+        background-color: #fff;
+        font-family: sans-serif;
+        }
+        h1 {
+        font-weight: normal;
+        font-size: 140%;
+        }
+    </style>
 </head>
 <body>
-  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;</h1>
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;</h1>
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
 
-  <xml id="toolbox" style="display: none">
-    <block type="controls_if"></block>
-    <block type="logic_compare"></block>
-    <block type="controls_repeat_ext"></block>
-    <block type="math_number"></block>
-    <block type="math_arithmetic"></block>
-    <block type="text"></block>
-    <block type="text_print"></block>
-  </xml>
+    <xml id="toolbox" style="display: none">
+        <block type="controls_if"></block>
+        <block type="procedures"></block>
+        <block type="logic_compare"></block>
+        <block type="controls_repeat_ext"></block>
+        <block type="math_number"></block>
+        <block type="math_arithmetic"></block>
+        <block type="text"></block>
+        <block type="text_print"></block>
+    </xml>
 
-  <script>
-    Blockly.inject(document.getElementById('blocklyDiv'),
-        {toolbox: document.getElementById('toolbox')});
-  </script>
+    <script>
+        Blockly.inject(document.getElementById('blocklyDiv'),
+            {toolbox: document.getElementById('toolbox')});
+        $.ajax({
+            type: 'post',
+            url: "/",
+            data: JSON.stringify({"request_type" : "DriverGetAllOperationsRequestMessage", "request_data" : {}})
+         }).success(function(response){
+            alert(response);
+            $scope.$apply(function(){
+                $scope.testData = JSON.parse(response);
+                console.log($scope.testData);
+            });
+        }).error(function(){
+            alert("AJAX failed!");
+        });
+      </script>
+    <div ng-controller="MainCtrl">
+      <div ng-view></div>
+    </div>
 
 </body>
 </html>

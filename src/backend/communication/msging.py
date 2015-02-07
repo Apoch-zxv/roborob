@@ -18,6 +18,7 @@ class RequestKlasses(object):
 DriverSingleMethodRequestMessage = RequestKlasses.create_request("DriverSingleMethodRequestMessage",
                                                           "driver_name method_name params")
 DriverGetAllDriversRequestMessage = RequestKlasses.create_request("DriverGetAllDriversRequestMessage", "")
+DriverGetAllOperationsRequestMessage = RequestKlasses.create_request("DriverGetAllOperationsRequestMessage", "")
 
 
 class ServerErrorCodes(object):
@@ -31,6 +32,12 @@ class ServerResponse(object):
     def __init__(self, message, status):
         self.status = status
         self.message = message
+
+
+class ServerAllOperationsSuccessResponse(ServerResponse):
+    def __init__(self, operations_dict):
+        super(ServerAllOperationsSuccessResponse, self).__init__("Successfully executed", ServerErrorCodes.SUCCESS)
+        self.operations_dict = operations_dict
 
 
 class ServerAllDriversSuccessResponse(ServerResponse):

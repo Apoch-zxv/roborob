@@ -1,6 +1,7 @@
 import socket
 import select
 import collections
+from collections import defaultdict
 from thread import *
 
 from utils.panic import Panic
@@ -11,6 +12,19 @@ from drivers.debug_driver import DebugDriver
 from communication.msging import *
 
 from request_handler import *
+
+
+class DisplayMethodArgInfo(object):
+    def __init__(self, name, type):
+        self.name = name
+        self.type = type
+
+
+class DisplayMethodInfo(object):
+    def __init__(self, name, args):
+        self.name = name
+        self.args = args
+
 
 class DriverContainer(object):
     def __init__(self, logger):
@@ -45,6 +59,18 @@ class DriverContainer(object):
 
     def get_all_drivers_names(self):
         return self._drivers.keys()
+
+    def get_all_operations(self):
+        res = defaultdict(list)
+        for driver_name, (driver, operations) in self._drivers.iteritems():
+            for op in operations.values():
+                name = op.description.name
+                display_args = []
+                for arg in op.description.arguments:
+                    display_args.append(DisplayMethodArgInfo(name = arg.name, type = arg.type.__name__).__dict__)
+                res[driver_name].append(DisplayMethodInfo(name = name, args = display_args).__dict__)
+        return res
+
 
 
 class RoboRob(object):
