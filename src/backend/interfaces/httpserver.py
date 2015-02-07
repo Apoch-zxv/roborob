@@ -1,23 +1,20 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import SocketServer
+from BaseHTTPServer import HTTPServer
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 from utils.logger import RoboLogger
+from python_interface import *
 from sys import argv
+import os
 
-class RoboRobHttpRequestHandler(BaseHTTPRequestHandler):
-    def __init__(self):
+class RoboRobHttpRequestHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **params):
+        SimpleHTTPRequestHandler.__init__(self, *args, **params)
         self._logger = RoboLogger.get_logger()
+        self._interface = PythonInterface("localhost", 8888)
 
     def _set_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
- 
-    def do_GET(self):
-        self._set_headers()
-        self.wfile.write("<html><body><h1>hi!</h1></body></html>")
- 
-    def do_HEAD(self):
-        self._set_headers()
         
     def do_POST(self):
         self._set_headers()
@@ -26,6 +23,7 @@ class RoboRobHttpRequestHandler(BaseHTTPRequestHandler):
     
     @staticmethod    
     def listen(server_address = "127.0.0.1", port=8080):
+        os.chdir("../../frontend")
         httpd = HTTPServer((server_address, port), RoboRobHttpRequestHandler)
         httpd.serve_forever()
  
