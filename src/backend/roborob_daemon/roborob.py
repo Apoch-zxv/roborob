@@ -6,6 +6,28 @@ from thread import *
 from utils.panic import Panic
 from utils.logger import RoboLogger
 
+from drivers.debug_driver import DebugDriver
+
+class DriverContainer(object):
+    def __init__(self, logger):
+        self._drivers = {}
+        self._logger = logger
+
+    def add_driver(self, driver):
+        if driver in self._drivers:
+            self._logger.error("Trying to add a driver that already exists !")
+            return False
+
+        try:
+            operations = driver.get_operations()
+
+            self._drivers[driver] = operations
+            return True
+        except Exception, e:
+            # TODO: Print stack trace
+            self._logger.error("Failed retrieving driver operations: %s", e.message)
+            return False
+
 class RoboRob(object):
     BACKLOG = 10
     RECV_BUFFER = 4096
@@ -17,6 +39,11 @@ class RoboRob(object):
         self._conf = self._load_configuration(self._working_dir)
         self._active_sockets = []
         self._listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._driver_container = DriverContainer(self._logger)
+
+    def register_driver(self, driver_class):
+        driver_instance = driver_class(self._logger)
+        self._driver_container.add_driver(driver_instance)
 
     def _load_configuration(self, working_dir):
         return collections.namedtuple("RoboRobConfig", "host port")(host = "", port = 8888)
@@ -65,4 +92,5 @@ class RoboRob(object):
 
 if __name__ == "__main__":
     roborob = RoboRob("C:\\roborob_output")
+    roborob.register_driver(DebugDriver)
     roborob.listen_for_requests()

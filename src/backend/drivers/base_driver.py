@@ -14,6 +14,9 @@ def driver_operation(name, arguments):
 
 
 class BaseDriver(object):
+    def init(self):
+        return True
+
     def get_operations(self):
         all_methods = inspect.getmembers(self, inspect.ismethod)
 
