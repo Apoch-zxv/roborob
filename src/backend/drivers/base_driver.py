@@ -5,7 +5,6 @@ DriverArgument = collections.namedtuple("DriverArgument", "name type")
 DriverOperation = collections.namedtuple("DriverMethod", "name arguments")
 
 
-#def driver_operation(func, name, arguments):
 def driver_operation(name, arguments):
     def inner_decorator(func):
         func.description = DriverOperation(name = name, arguments= arguments)

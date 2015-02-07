@@ -8,6 +8,10 @@ from utils.logger import RoboLogger
 
 from drivers.debug_driver import DebugDriver
 
+from communication.msging import *
+
+from request_handler import *
+
 class DriverContainer(object):
     def __init__(self, logger):
         self._drivers = {}
@@ -21,12 +25,27 @@ class DriverContainer(object):
         try:
             operations = driver.get_operations()
 
-            self._drivers[driver] = operations
+            self._drivers[driver.__class__.__name__] = (driver, operations)
             return True
         except Exception, e:
             # TODO: Print stack trace
             self._logger.error("Failed retrieving driver operations: %s", e.message)
             return False
+
+    def get_driver_method(self, driver_name, method_name):
+        if driver_name not in self._drivers:
+            return None
+
+        driver, operations = self._drivers[driver_name]
+
+        if method_name not in operations:
+            return None
+
+        return operations[method_name]
+
+    def get_all_drivers_names(self):
+        return self._drivers.keys()
+
 
 class RoboRob(object):
     BACKLOG = 10
@@ -40,6 +59,7 @@ class RoboRob(object):
         self._active_sockets = []
         self._listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._driver_container = DriverContainer(self._logger)
+        self._request_handler = RequestHandler(self._logger, self._driver_container)
 
     def register_driver(self, driver_class):
         driver_instance = driver_class(self._logger)
@@ -87,10 +107,44 @@ class RoboRob(object):
         Panic(self._logger, 'Robo rob should never exit!')
 
     def single_request_handler(self, sock, data, addr, port):
-        self._logger.info("Handling single request from %s : %s", addr, port)
-        self._logger.debug("Recieved data: %s", data)
+        try:
+            self._logger.info("Handling single request from %s : %s", addr, port)
+            self._logger.debug("Recieved data: %s", data)
+            single_request = JsonParser.parse_json_request(data)
+
+            response = self._request_handler.handle_request(single_request)
+
+        except ParseError, e:
+            response = ServerAPIErrorResponse("Failed parsing request %s error: %s" % (data, repr(e)))
+        except Exception, e:
+            err_msg = "Failed executing request"
+            self._logger.error(err_msg)
+            self._logger.exception(e)
+            response = ServerInternalErrorResponse(err_msg)
+        except:
+            err_msg = "Internal error while executing request"
+            self._logger.error(err_msg)
+            response = ServerInternalErrorResponse(err_msg)
+
+        try:
+            json_response = JsonParser.parse_response_to_json(response)
+            self._logger.debug("Sending response: %s", json_response)
+            sock.send(json_response)
+        except Exception, e:
+            self._logger.error("Failed sending response to %s : %s", addr, port)
+            self._logger.exception(e)
+
+
+    @staticmethod
+    def start_eternal_server():
+        try:
+            roborob = RoboRob("C:\\roborob_output")
+            roborob.register_driver(DebugDriver)
+            roborob.listen_for_requests()
+        except Exception, e:
+            RoboLogger.get_logger().error("Unhandle exception occured")
+            RoboLogger.get_logger().exception(e)
+            Panic(RoboLogger.get_logger(), "Unhandled exception")
 
 if __name__ == "__main__":
-    roborob = RoboRob("C:\\roborob_output")
-    roborob.register_driver(DebugDriver)
-    roborob.listen_for_requests()
+    RoboRob.start_eternal_server()
