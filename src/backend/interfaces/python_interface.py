@@ -1,3 +1,4 @@
+import json
 import socket
 
 class PythonInterface(object):
@@ -14,4 +15,8 @@ class PythonInterface(object):
     def send_message(self, msg):
         self._connect_socket.send(msg)
         return self._connect_socket.recv(4096)
+
+    def get_all_operations(self):
+        msg = {"request_type": "DriverGetAllOperationsRequestMessage", "request_data": {}}
+        return json.loads(self.send_message(json.dumps(msg)))
 

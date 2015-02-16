@@ -21,8 +21,9 @@ class DisplayMethodArgInfo(object):
 
 
 class DisplayMethodInfo(object):
-    def __init__(self, name, args):
+    def __init__(self, name, inner_name, args):
         self.name = name
+        self.inner_name = inner_name
         self.args = args
 
 
@@ -65,10 +66,11 @@ class DriverContainer(object):
         for driver_name, (driver, operations) in self._drivers.iteritems():
             for op in operations.values():
                 name = op.description.name
+                inner_name = op.description.inner_name
                 display_args = []
                 for arg in op.description.arguments:
                     display_args.append(DisplayMethodArgInfo(name = arg.name, type = arg.type.__name__).__dict__)
-                res[driver_name].append(DisplayMethodInfo(name = name, args = display_args).__dict__)
+                res[driver_name].append(DisplayMethodInfo(name = name, inner_name= inner_name, args = display_args).__dict__)
         return res
 
 
