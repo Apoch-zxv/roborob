@@ -26,7 +26,7 @@ window.AppView = Backbone.View.extend({
 	},
 	
 	execute_command : function() {
-		alert(Blockly.Python.workspaceToCode());
+		new ExecutionCode({name: "test", code: Blockly.Python.workspaceToCode()}).save();
 		console.log("Executing command");
 	},
 

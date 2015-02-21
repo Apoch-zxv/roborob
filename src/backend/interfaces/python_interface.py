@@ -16,6 +16,10 @@ class PythonInterface(object):
         self._connect_socket.send(msg)
         return self._connect_socket.recv(4096)
 
+    def submit_code(self, code):
+        msg = {"request_type": "ExecuteCode", "request_data": {"code": code}}
+        return json.loads(self.send_message(json.dumps(msg)))
+
     def get_all_operations(self):
         msg = {"request_type": "DriverGetAllOperationsRequestMessage", "request_data": {}}
         return json.loads(self.send_message(json.dumps(msg)))

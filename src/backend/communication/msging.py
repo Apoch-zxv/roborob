@@ -19,7 +19,7 @@ DriverSingleMethodRequestMessage = RequestKlasses.create_request("DriverSingleMe
                                                           "driver_name method_name params")
 DriverGetAllDriversRequestMessage = RequestKlasses.create_request("DriverGetAllDriversRequestMessage", "")
 DriverGetAllOperationsRequestMessage = RequestKlasses.create_request("DriverGetAllOperationsRequestMessage", "")
-
+ExecuteCode = RequestKlasses.create_request("ExecuteCode", "code")
 
 class ServerErrorCodes(object):
     SUCCESS = 0
@@ -32,6 +32,9 @@ class ServerResponse(object):
     def __init__(self, message, status):
         self.status = status
         self.message = message
+
+    def jsonable(self):
+        return self.__dict__
 
 
 class ServerAllOperationsSuccessResponse(ServerResponse):

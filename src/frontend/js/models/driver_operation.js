@@ -1,3 +1,13 @@
+window.ExecutionCode = Backbone.Model.extend({
+	url : "api/code_execution",
+	defaults : function() {
+		return {
+			name : "nothing",
+			code : "nothing"
+		};
+	},
+});
+
 window.OperationArg = Backbone.Model.extend({
 	defaults : function() {
 		return {

@@ -15,8 +15,9 @@ from request_handler import *
 
 
 class DisplayMethodArgInfo(object):
-    def __init__(self, name, type):
+    def __init__(self, name, inner_name, type):
         self.name = name
+        self.inner_name = inner_name
         self.type = type
 
 
@@ -69,7 +70,7 @@ class DriverContainer(object):
                 inner_name = op.description.inner_name
                 display_args = []
                 for arg in op.description.arguments:
-                    display_args.append(DisplayMethodArgInfo(name = arg.name, type = arg.type.__name__).__dict__)
+                    display_args.append(DisplayMethodArgInfo(name = arg.name, inner_name = arg.inner_name, type = arg.type.__name__).__dict__)
                 res[driver_name].append(DisplayMethodInfo(name = name, inner_name= inner_name, args = display_args).__dict__)
         return res
 

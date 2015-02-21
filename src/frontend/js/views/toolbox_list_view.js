@@ -39,9 +39,24 @@ window.ToolboxListView = Backbone.View.extend({
 		console.log("In ToolboxListView initialize");
 	},
 
+	addDefaults : function() {
+		default_category = ["controls_if", "controls_repeat_ext", "math_number", "math_arithmetic", "text", "text_print"];
+		default_category_name_prefix = "<category name=\"Helpers\">";
+		default_category_name_postix = "</category>";
+		
+		full_struct = "";
+		full_struct += default_category_name_prefix;
+		_.each(default_category, function(category_name) {
+			full_struct += "<block type=\"" + category_name + "\"></block>";
+		}, this);
+		full_struct += default_category_name_postix;
+		$(this.el).append(full_struct);
+	},
+
 	render : function() {
 		console.log("In ToolboxListView render");
 		$(this.el).empty();
+		this.addDefaults();
 		_.each(this.model.models, function(driver) {
 			$(this.el).append(new ToolboxCategoryView({
 				model : driver

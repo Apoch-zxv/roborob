@@ -1,7 +1,7 @@
 import inspect
 import collections
 
-DriverArgument = collections.namedtuple("DriverArgument", "name real_name type")
+DriverArgument = collections.namedtuple("DriverArgument", "name inner_name type")
 DriverOperation = collections.namedtuple("DriverMethod", "name inner_name arguments")
 
 def generate_inner_name(func):

@@ -14,7 +14,7 @@ window.ToolboxBlockView = Backbone.View.extend({
 				this.appendDummyInput().appendField(that.model.name);
 				this.setHelpUrl('http://www.example.com/');
 				_.each(that.model.args, function(argument) {
-					this.appendValueInput(argument.name).setCheck("null").appendField(argument.name);
+					this.appendValueInput(argument.name).appendField(argument.name);
 				}, this);
 				this.setPreviousStatement(true);
 				this.setNextStatement(true);
@@ -23,12 +23,13 @@ window.ToolboxBlockView = Backbone.View.extend({
 		};
 
 		Blockly.Python[this.model.inner_name] = function(block) {
-			var all_args = "";
+			var all_args = [];
 			_.each(that.model.args, function(argument) {
-				all_args = all_args.concat(Blockly.Python.valueToCode(block, argument.name, Blockly.Python.ORDER_ATOMIC));
+				all_args.push(argument.inner_name + " = " + Blockly.Python.valueToCode(block, argument.name, Blockly.Python.ORDER_ATOMIC));
 			}, this);
+			all_args_str = all_args.join();
 			// TODO: Assemble Python into code variable.
-			var code = that.model.inner_name + '(' + all_args + ')\n';
+			var code = that.model.inner_name + '(' + all_args_str + ')\n';
 			return code;
 		};
 	},

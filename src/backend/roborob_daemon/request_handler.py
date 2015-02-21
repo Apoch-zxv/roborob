@@ -13,8 +13,14 @@ class RequestHandler(object):
             return self._handle_get_all_drivers_request(request)
         elif isinstance(request, DriverGetAllOperationsRequestMessage):
             return self._handle_get_all_operations_request(request)
+        elif isinstance(request, ExecuteCode):
+            return self._handle_execute_code(request)
 
         return ServerNotSupportedErrorResponse("The request %s is not supported yet !" % type(request))
+
+    def _handle_execute_code(self, request):
+        self._logger.info("Handle execute code request with: %s", request)
+        return ServerExecutionSuccessResponse()
 
     def _handle_get_all_operations_request(self, request):
         names = self._driver_container.get_all_operations()
