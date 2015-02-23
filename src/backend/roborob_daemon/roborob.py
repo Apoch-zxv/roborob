@@ -1,79 +1,16 @@
 import socket
 import select
-import collections
-from collections import defaultdict
 from thread import *
 
 from utils.panic import Panic
 from utils.logger import RoboLogger
 
-from drivers.debug_driver import DebugDriver
+from drivers.base_driver import BASE_DRIVERS
+from drivers.debug_driver import *
 
-from communication.msging import *
+from driver_container import DriverContainer
 
 from request_handler import *
-
-
-class DisplayMethodArgInfo(object):
-    def __init__(self, name, inner_name, type):
-        self.name = name
-        self.inner_name = inner_name
-        self.type = type
-
-
-class DisplayMethodInfo(object):
-    def __init__(self, name, inner_name, args):
-        self.name = name
-        self.inner_name = inner_name
-        self.args = args
-
-
-class DriverContainer(object):
-    def __init__(self, logger):
-        self._drivers = {}
-        self._logger = logger
-
-    def add_driver(self, driver):
-        if driver in self._drivers:
-            self._logger.error("Trying to add a driver that already exists !")
-            return False
-
-        try:
-            operations = driver.get_operations()
-
-            self._drivers[driver.__class__.__name__] = (driver, operations)
-            return True
-        except Exception, e:
-            # TODO: Print stack trace
-            self._logger.error("Failed retrieving driver operations: %s", e.message)
-            return False
-
-    def get_driver_method(self, driver_name, method_name):
-        if driver_name not in self._drivers:
-            return None
-
-        driver, operations = self._drivers[driver_name]
-
-        if method_name not in operations:
-            return None
-
-        return operations[method_name]
-
-    def get_all_drivers_names(self):
-        return self._drivers.keys()
-
-    def get_all_operations(self):
-        res = defaultdict(list)
-        for driver_name, (driver, operations) in self._drivers.iteritems():
-            for op in operations.values():
-                name = op.description.name
-                inner_name = op.description.inner_name
-                display_args = []
-                for arg in op.description.arguments:
-                    display_args.append(DisplayMethodArgInfo(name = arg.name, inner_name = arg.inner_name, type = arg.type.__name__).__dict__)
-                res[driver_name].append(DisplayMethodInfo(name = name, inner_name= inner_name, args = display_args).__dict__)
-        return res
-
 
 
 class RoboRob(object):
@@ -92,7 +29,10 @@ class RoboRob(object):
 
     def register_driver(self, driver_class):
         driver_instance = driver_class(self._logger)
-        self._driver_container.add_driver(driver_instance)
+        if driver_instance.init():
+            self._driver_container.add_driver(driver_instance)
+        else:
+            self._logger.error("Failed initializing driver: %s", str(driver_class))
 
     def _load_configuration(self, working_dir):
         return collections.namedtuple("RoboRobConfig", "host port")(host = "", port = 8888)
@@ -139,12 +79,13 @@ class RoboRob(object):
         try:
             self._logger.info("Handling single request from %s : %s", addr, port)
             self._logger.debug("Recieved data: %s", data)
-            single_request = JsonParser.parse_json_request(data)
+            request_type, request_data = JsonParser.parse_json_request(data)
 
-            response = self._request_handler.handle_request(single_request)
+            response = self._request_handler.handle_request(request_type, request_data)
 
         except ParseError, e:
             response = ServerAPIErrorResponse("Failed parsing request %s error: %s" % (data, repr(e)))
+            self._logger.exception(e)
         except Exception, e:
             err_msg = "Failed executing request"
             self._logger.error(err_msg)
@@ -168,7 +109,8 @@ class RoboRob(object):
     def start_eternal_server():
         try:
             roborob = RoboRob("C:\\roborob_output")
-            roborob.register_driver(DebugDriver)
+            for driver in BASE_DRIVERS:
+                roborob.register_driver(driver)
             roborob.listen_for_requests()
         except Exception, e:
             RoboLogger.get_logger().error("Unhandle exception occured")

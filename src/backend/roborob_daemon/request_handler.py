@@ -1,82 +1,29 @@
-from communication.msging import *
+from collections import namedtuple
 
+from communication.msging import *
+from requests_impl.base_request import *
+from requests_impl.driver_single_method_request import *
+from requests_impl.execute_code_operation import *
+from requests_impl.get_all_drivers_request import *
+from requests_impl.get_all_operations import *
+
+Context = namedtuple("Context", "driver_container logger")
 
 class RequestHandler(object):
     def __init__(self, logger, driver_container):
         self._logger = logger
         self._driver_container = driver_container
+        self._request_context = Context(self._driver_container, self._logger)
+        self._requests = {}
+        self._register_requests()
 
-    def handle_request(self, request):
-        if isinstance(request, DriverSingleMethodRequestMessage):
-            return self._handle_single_method_request(request)
-        elif isinstance(request, DriverGetAllDriversRequestMessage):
-            return self._handle_get_all_drivers_request(request)
-        elif isinstance(request, DriverGetAllOperationsRequestMessage):
-            return self._handle_get_all_operations_request(request)
-        elif isinstance(request, ExecuteCode):
-            return self._handle_execute_code(request)
+    def _register_requests(self):
+        for klass in REQUEST_CLASSES:
+            self._requests[klass.__name__] = klass(self._request_context)
 
-        return ServerNotSupportedErrorResponse("The request %s is not supported yet !" % type(request))
-
-    def _handle_execute_code(self, request):
-        self._logger.info("Handle execute code request with: %s", request)
-        return ServerExecutionSuccessResponse()
-
-    def _handle_get_all_operations_request(self, request):
-        names = self._driver_container.get_all_operations()
-
-        if names is None:
-            return ServerInternalErrorResponse("Drivers not initialized")
-
-        return ServerAllOperationsSuccessResponse(names)
-
-    def _handle_get_all_drivers_request(self, request):
-        names = self._driver_container.get_all_drivers_names()
-
-        if names is None:
-            return ServerInternalErrorResponse("Drivers not initialized")
-
-        return ServerAllDriversSuccessResponse(names)
-
-    def _find_param_by_name(self, argument_list, param_name):
-        for arg in argument_list:
-            if arg.name == param_name:
-                return arg
-        return None
-
-    def _validate_params(self, method, params):
-        descriptor = method.description
-
-        for param_name, param_value in params.iteritems():
-            arg = self._find_param_by_name(descriptor.arguments, param_name)
-            if arg is None:
-                return False
-        return True
-
-    def _get_callable_params(self, argument_list, params):
-        res = {}
-        for param_key, param_value in params.iteritems():
-            arg = self._find_param_by_name(argument_list, param_key)
-            res[arg.real_name] = param_value
-        return res
-
-    def _handle_single_method_request(self, request):
-        method = self._driver_container.get_driver_method(request.driver_name, request.method_name)
-
-        if method is None:
-            return ServerAPIErrorResponse("Not such driver / method %s %s", request.driver_name, request.method_name)
-
-        if not self._validate_params(method, request.params):
-            return ServerAPIErrorResponse("The given params are not applible to the given "
-                                          "method expected: %s given: %s" % (method.description, request.params))
-
-        try:
-            method(**self._get_callable_params(method.description.arguments, request.params))
-            return ServerExecutionSuccessResponse()
-        except Exception, e:
-            err_msg = "Failed executing %s %s" % (request.driver_name, request.method_name)
-            self._logger.error(err_msg)
-            self._logger.exception(e)
-
-            return ServerInternalErrorResponse(err_msg)
+    def handle_request(self, request_type, request_data):
+        if request_type not in self._requests:
+            return ServerNotSupportedErrorResponse("The request %s is not supported yet !" % request_type)
+        handler = self._requests[request_type]
+        return handler.handle_request(**request_data)
 

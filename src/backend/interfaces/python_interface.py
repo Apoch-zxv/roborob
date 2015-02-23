@@ -6,6 +6,7 @@ class PythonInterface(object):
         self._addr = addr
         self._port = port
         self._connect_socket = None
+        self.connect()
 
     def connect(self):
         self._connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,10 +18,10 @@ class PythonInterface(object):
         return self._connect_socket.recv(4096)
 
     def submit_code(self, code):
-        msg = {"request_type": "ExecuteCode", "request_data": {"code": code}}
+        msg = {"request_type": "ExecuteCodeRequest", "request_data": {"code": code}}
         return json.loads(self.send_message(json.dumps(msg)))
 
     def get_all_operations(self):
-        msg = {"request_type": "DriverGetAllOperationsRequestMessage", "request_data": {}}
+        msg = {"request_type": "GetAllOperationsRequest", "request_data": {}}
         return json.loads(self.send_message(json.dumps(msg)))
 

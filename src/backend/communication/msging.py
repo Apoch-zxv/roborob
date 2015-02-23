@@ -15,11 +15,6 @@ class RequestKlasses(object):
             return None
         return RequestKlasses.REQUEST_KLASSES[name]
 
-DriverSingleMethodRequestMessage = RequestKlasses.create_request("DriverSingleMethodRequestMessage",
-                                                          "driver_name method_name params")
-DriverGetAllDriversRequestMessage = RequestKlasses.create_request("DriverGetAllDriversRequestMessage", "")
-DriverGetAllOperationsRequestMessage = RequestKlasses.create_request("DriverGetAllOperationsRequestMessage", "")
-ExecuteCode = RequestKlasses.create_request("ExecuteCode", "code")
 
 class ServerErrorCodes(object):
     SUCCESS = 0
@@ -35,23 +30,6 @@ class ServerResponse(object):
 
     def jsonable(self):
         return self.__dict__
-
-
-class ServerAllOperationsSuccessResponse(ServerResponse):
-    def __init__(self, operations_dict):
-        super(ServerAllOperationsSuccessResponse, self).__init__("Successfully executed", ServerErrorCodes.SUCCESS)
-        self.operations_dict = operations_dict
-
-
-class ServerAllDriversSuccessResponse(ServerResponse):
-    def __init__(self, driver_names):
-        super(ServerAllDriversSuccessResponse, self).__init__("Successfully executed", ServerErrorCodes.SUCCESS)
-        self.driver_names = driver_names
-
-
-class ServerExecutionSuccessResponse(ServerResponse):
-    def __init__(self):
-        super(ServerExecutionSuccessResponse, self).__init__("Successfully executed", ServerErrorCodes.SUCCESS)
 
 
 class ServerAPIErrorResponse(ServerResponse):
@@ -97,18 +75,7 @@ class JsonParser(object):
 
         request_type = request[JsonParser.REQUEST_TYPE]
 
-        klass = RequestKlasses.get_klass_by_name(request_type)
-        if klass is not None:
-            if JsonParser.REQUEST_DATA not in request:
-                raise ParseError("Expected request data %s" % JsonParser.REQUEST_DATA)
-            return JsonParser.parse_class_request(klass, request[JsonParser.REQUEST_DATA])
+        if JsonParser.REQUEST_DATA not in request:
+            raise ParseError("Expected request data %s" % JsonParser.REQUEST_DATA)
 
-        raise ParseError("Unknown request type %s" % request_type)
-
-
-    @staticmethod
-    def parse_class_request(klass, request_data):
-        try:
-            return klass(**request_data)
-        except Exception, e:
-            raise ParseError("Failed creating %s from %s expected %s error %s" % (klass, request_data, klass._fields, e.message))
+        return request_type, request[JsonParser.REQUEST_DATA]
