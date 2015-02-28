@@ -46,6 +46,10 @@ class ServerNotSupportedErrorResponse(ServerResponse):
     def __init__(self, message):
         super(ServerNotSupportedErrorResponse, self).__init__(message, ServerErrorCodes.NOT_SUPPORTED)
 
+class ServerSuccessResponse(ServerResponse):
+    def __init__(self, message = ""):
+        super(ServerSuccessResponse, self).__init__(message, ServerErrorCodes.SUCCESS)
+
 
 class ParseError(Exception):
     pass

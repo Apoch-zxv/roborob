@@ -33,7 +33,6 @@ class RoboRobRequestHandler(object):
     def __init__(self):
         self._logger = RoboLogger.get_logger()
         self._interface = PythonInterface("localhost", 8888)
-        self._interface.connect()
         self._rest_dict = {"operations" : self._handle_operations, "code_execution": self._handle_code_execution}
 
     def _general_to_rest(self, roborob_response):
@@ -50,17 +49,13 @@ class RoboRobRequestHandler(object):
         self._logger.debug("The code: %s", code)
         self._interface.submit_code(code)
 
-        return ServerExecutionSuccessResponse().jsonable()
+        return ServerSuccessResponse().jsonable()
 
     def _handle_operations(self, parsed_path, request_content):
         operations = self._interface.get_all_operations()
 
         if int(operations["status"]) == ServerErrorCodes.SUCCESS:
-            rest_res = []
-            operations = self._general_to_rest(operations)
-            for driver_name, driver_operations in operations["operations_dict"].iteritems():
-                rest_res.append(self._single_driver_operation_list_to_rest(driver_name, driver_operations))
-            return rest_res
+            return self._general_to_rest(operations)
         else:
             return self._get_error_response(json.dumps(operations))
 
@@ -81,7 +76,9 @@ class RoboRobRequestHandler(object):
             return json.dumps(ServerAPIErrorResponse(msg).jsonable())
 
         self._logger.info("Received a request for category: %s path: %s", category, parsed_path)
-        return json.dumps(self._rest_dict[category](parsed_path, request_content))
+        response = json.dumps(self._rest_dict[category](parsed_path, request_content))
+        self._logger.debug("Sending response: " + response)
+        return response
 
     def handle_single_request(self, request):
         self._logger.debug("Recieved %s", request)

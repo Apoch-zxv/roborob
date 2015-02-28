@@ -9,13 +9,13 @@ window.ToolboxCategoryView = Backbone.View.extend({
 	attributes : function() {
 		// Return model data
 		return {
-			name : this.model.get('name'),
+			name : this.model.get('display_name'),
 		};
 	},
 
 	render : function() {
 		console.log("In ToolboxCategoryView render");
-		_.each(this.model.get("operations"), function(operation) {
+		_.each(this.model.get("operations_dict"), function(operation) {
 			$(this.el).append(new window.ToolboxBlockView({
 				model : operation
 			}).render().el);

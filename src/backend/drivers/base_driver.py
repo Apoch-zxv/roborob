@@ -4,7 +4,8 @@ BASE_DRIVERS = set()
 
 def driver_operation(name, arguments):
     def inner_decorator(func):
-        func.description = {"name": name, "arguments": arguments}
+        parsed_arguments = [(display_name, inner_name, arg_type.__name__) for (display_name, inner_name, arg_type) in arguments]
+        func.description = {"name": name, "arguments": parsed_arguments}
         return func
     return inner_decorator
 

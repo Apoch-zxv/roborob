@@ -5,6 +5,7 @@ class Dictable(object):
         self._description = None
         self._inner_name = None
         self._child = []
+        self._child_name = None
 
     def to_dict(self):
         res = {}
@@ -14,6 +15,9 @@ class Dictable(object):
         children = []
         for c in self._child:
             children.append(c.to_dict())
+
+        if children:
+            res.update({self._child_name: children})
         return res
 
 
@@ -32,6 +36,7 @@ class DriverDescription(Dictable):
         self._driver = driver
         self._description = description
         self._child = operations
+        self._child_name = "operations"
 
 
 class DriverContainer(object):

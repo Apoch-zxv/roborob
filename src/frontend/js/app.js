@@ -10,10 +10,10 @@ window.AppView = Backbone.View.extend({
 		operations.fetch({
             success:function (data) {
             	console.log("Operations fetched successfully");
-            	console.log(data.models);
-            	
+            	console.log(data);
+
             	$('#generated_toolbox').html(new ToolboxListView({model: data}).render().el);
-            	
+
             	Blockly.inject(document.getElementById('blocklyDiv'), {
 					toolbox : document.getElementById('toolbox')
 				});
