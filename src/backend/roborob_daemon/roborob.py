@@ -10,6 +10,9 @@ from drivers.debug_driver import *
 
 from driver_container import DriverContainer
 
+from persistence.db_persistor.sqllite_persistor import *
+from persistence.db_persistor.user import *
+
 from request_handler import *
 
 
@@ -19,6 +22,7 @@ class RoboRob(object):
 
     def __init__(self, working_dir):
         self._drivers = []
+        self._init_persistence_data()
         self._working_dir = working_dir
         self._logger = RoboLogger.get_logger()
         self._conf = self._load_configuration(self._working_dir)
@@ -26,6 +30,10 @@ class RoboRob(object):
         self._listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._driver_container = DriverContainer(self._logger)
         self._request_handler = RequestHandler(self._logger, self._driver_container)
+
+    def _init_persistence_data(self):
+        self._db_persistor = SqlPersistor.get_instance()
+        self._db_persistor.create_all_if_needed()
 
     def register_driver(self, driver_class):
         driver_instance = driver_class(self._logger)
