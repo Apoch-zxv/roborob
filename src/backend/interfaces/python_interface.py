@@ -25,3 +25,7 @@ class PythonInterface(object):
         msg = {"request_type": "GetAllOperationsRequest", "request_data": {}}
         return json.loads(self.send_message(json.dumps(msg)))
 
+    def get_all_users(self):
+        msg = {"request_type": "GetAllUsersRequest", "request_data": {}}
+        return json.loads(self.send_message(json.dumps(msg)))
+

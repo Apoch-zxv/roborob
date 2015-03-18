@@ -6,7 +6,7 @@ from sys import argv
 from communication.msging import *
 import json
 import os
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 
 app = Flask(__name__)
 
@@ -43,6 +43,23 @@ class RoboRobRequestHandler(object):
         else:
             return self._get_error_response(json.dumps(operations))
 
+    def handle_debug_code(self, data):
+        self._logger.info("Executing: " + data)
+        res = "success"
+        try:
+            exec data
+        except Exception, e:
+            res = str(e)
+        return {"status": res}
+
+    def handle_users(self):
+        users = self._interface.get_all_users()
+
+        if int(users["status"]) == ServerErrorCodes.SUCCESS:
+            general_rest = self._general_to_rest(users)
+        else:
+            return self._get_error_response(json.dumps(users))
+
     def _get_error_response(self, msg):
         self._logger.error(msg)
         return ServerAPIErrorResponse(msg).jsonable()
@@ -56,6 +73,14 @@ class RoboRobRequestHandler(object):
 @app.route('/api/operations', methods=['GET', 'POST'])
 def api_functions():
     return json.dumps(RoboRobRequestHandler.get_instance().handle_operations())
+
+@app.route('/api/users', methods=['GET', 'POST'])
+def api_users():
+    return json.dumps(RoboRobRequestHandler.get_instance().handle_users())
+
+@app.route('/api/debug', methods=['GET', 'POST'])
+def api_debug():
+    return json.dumps(RoboRobRequestHandler.get_instance().handle_debug_code(json.loads(request.data)["code"]))
 
 @app.route('/')
 @app.route('/<path:path>', methods=['GET'])

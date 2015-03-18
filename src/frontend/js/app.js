@@ -6,21 +6,19 @@ window.AppView = Backbone.View.extend({
     },
     
 	initialize : function() {
-		operations = new window.DriverOperations;
-		operations.fetch({
+        var users = new window.Users;
+        users.fetch({
             success:function (data) {
-            	console.log("Operations fetched successfully");
-            	console.log(data);
-
-            	$('#generated_toolbox').html(new ToolboxListView({model: data}).render().el);
-
-            	Blockly.inject(document.getElementById('blocklyDiv'), {
-					toolbox : document.getElementById('toolbox')
-				});
+                console.log("Fetched users");
+                console.log(data);
+                if (data.length == 0) {
+                    console.log("No users found openning sign up");
+                    $("#signupModal").modal('show');
+                }
             },
             error:function (data) {
-            	console.log("Operations fetch failed");
-            	console.log(data);
+                console.log("Failed fetching users");
+                console.log(data);
             }
         });
 	},
@@ -32,7 +30,7 @@ window.AppView = Backbone.View.extend({
 
 	render : function() {
 		console.log("in render");
-	},
+	}
 });
 
 window.app = new window.AppView();

@@ -15,7 +15,7 @@ class SqlPersistor(object):
         return SqlPersistor.INSTANCE
 
     def __init__(self):
-        self._engine = create_engine('sqlite:///:memory:', echo=True)
+        self._engine = create_engine('sqlite:///temp.db', connect_args={'check_same_thread':False}, echo=True)
         self._session_maker = sessionmaker(bind=self._engine)
         self._session = self._session_maker()
         self._persistors_map = {}
@@ -27,7 +27,7 @@ class SqlPersistor(object):
         return self._engine
 
     def create_all_if_needed(self):
-        Base.metadata.create_all(self._engine)
+        Base.metadata.create_all(bind = self._engine)
 
     def query_all(self, klass):
         return self._session.query(klass).all()

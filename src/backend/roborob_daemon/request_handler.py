@@ -5,15 +5,16 @@ from requests_impl.base_request import *
 from requests_impl.driver_single_method_request import *
 from requests_impl.execute_code_operation import *
 from requests_impl.get_all_drivers_request import *
+from requests_impl.get_all_users import *
 from requests_impl.get_all_operations import *
 
-Context = namedtuple("Context", "driver_container logger")
+Context = namedtuple("Context", "driver_container db_persistor logger")
 
 class RequestHandler(object):
-    def __init__(self, logger, driver_container):
+    def __init__(self, logger, driver_container, db_persistor):
         self._logger = logger
         self._driver_container = driver_container
-        self._request_context = Context(self._driver_container, self._logger)
+        self._request_context = Context(self._driver_container, db_persistor, self._logger)
         self._requests = {}
         self._register_requests()
 

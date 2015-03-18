@@ -29,7 +29,7 @@ class RoboRob(object):
         self._active_sockets = []
         self._listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._driver_container = DriverContainer(self._logger)
-        self._request_handler = RequestHandler(self._logger, self._driver_container)
+        self._request_handler = RequestHandler(self._logger, self._driver_container, self._db_persistor)
 
     def _init_persistence_data(self):
         self._db_persistor = SqlPersistor.get_instance()

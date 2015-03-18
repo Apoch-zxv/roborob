@@ -5,7 +5,7 @@ window.ExecutionCode = Backbone.Model.extend({
 			name : "nothing",
 			code : "nothing"
 		};
-	},
+	}
 });
 
 window.OperationArg = Backbone.Model.extend({
@@ -14,7 +14,7 @@ window.OperationArg = Backbone.Model.extend({
 			name : "nothing",
 			type : "nothing"
 		};
-	},
+	}
 });
 
 window.DriverOpearionArgs = Backbone.Collection.extend({
@@ -27,7 +27,7 @@ window.DriverOperation = Backbone.Model.extend({
 			name : "nothing",
 			args : new DriverOpearionArgs()
 		};
-	},
+	}
 });
 
 window.DriverOperations = Backbone.Collection.extend({
@@ -42,7 +42,7 @@ window.DriverDescription = Backbone.Model.extend({
 			name : "nothing",
 			operations : new DriverOperations()
 		};
-	},
+	}
 });
 
 window.DriverDescriptions = Backbone.Collection.extend({

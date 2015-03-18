@@ -4,7 +4,7 @@ from sqllite_persistor import Base, SqlPersistor, register_db_class
 
 @register_db_class("users")
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
