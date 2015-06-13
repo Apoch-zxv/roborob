@@ -158,6 +158,7 @@ function submit_number(data) {
 	var target = data.target;
 	if (!target.state.initial_state) {
 		display_on_initiator(target.initiator, target.number.text);
+		remove_gray_shadow();
 		STAGE.removeChild(target.parent);
 	}
 }
@@ -305,10 +306,13 @@ function submit_angle_initiator(data) {
 	var target = data.target;
 	var initiator = target.initiator;
 	display_on_initiator(target.initiator, target.number.text);
+	remove_gray_shadow();
 	STAGE.removeChild(target.parent);
 }
 
 function open_angle(initiator) {
+	gray_shadow();
+	
 	var angle = PIXI.Sprite.fromImage(decoration_component["angle_bg"].image_name);
 	angle.position.x = 450;
 	angle.position.y = 150;
@@ -401,6 +405,8 @@ function open_angle(initiator) {
 }
 
 function open_keyboard(initiator) {
+	gray_shadow();
+	
 	var keyboard_bg = PIXI.Sprite.fromImage("images/interaction/keyboard_window_BG.png");
 	keyboard_bg.position.x = 100;
 	keyboard_bg.position.y = 150;
@@ -416,7 +422,17 @@ function open_keyboard(initiator) {
 	STAGE.addChild(keyboard_bg);
 }
 
+function gray_shadow() {
+	STAGE.addChild(GRAY_BG);
+}
+
+function remove_gray_shadow() {
+	STAGE.removeChild(GRAY_BG);
+}
+
 function open_calculator(initiator) {
+	gray_shadow();
+	
 	var calc_window = PIXI.Sprite.fromImage(decoration_component["calculator_bg"].image_name);
 	var calc_field = PIXI.Sprite.fromImage(decoration_component["window_field"].image_name);
 	
@@ -822,11 +838,16 @@ function replace_object(old_object, new_object) {
 }
 
 function bg_clicked(data) {
+	var to_remove = [];
 	var array_length = STAGE.children.length;
 	for (var i = 0; i < array_length; i++) {
 		if (STAGE.children[i].remove_on_bg_click == true) {
-			remove_from_stage_object(STAGE.children[i]);
+			to_remove.push(STAGE.children[i]);
 		}
+	}
+	
+	for (var i = 0; i < to_remove.length; i++) {
+		remove_from_stage_object(to_remove[i]);
 	}
 }
 
@@ -945,3 +966,9 @@ function init() {
  
     requestAnimationFrame( animate );
 }
+
+var GRAY_BG = PIXI.Sprite.fromImage("images/gray_bg.png");
+GRAY_BG.interactive = true;
+GRAY_BG.alpha = 0.5;
+GRAY_BG.remove_on_bg_click = true;
+GRAY_BG.click = GRAY_BG.tab = bg_clicked;
