@@ -1,6 +1,13 @@
 from logger import RoboLogger
 import json
+import platform
 from flask import Flask, send_from_directory, request
+
+if platform.node() != "DrawBot":
+    print "Debug mode using dummy interface"
+    from dummy_drawbot import interface_exposure
+else:
+    from drawbot import interface_exposure
 
 app = Flask(__name__)
 
@@ -11,6 +18,7 @@ class RoboRobRequestHandler(object):
 
     def __init__(self):
         self._logger = RoboLogger.get_logger()
+        self._interface = interface_exposure()
 
     def handle_code_execution(self, code_json):
         print code_json
