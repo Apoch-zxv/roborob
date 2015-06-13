@@ -1,11 +1,5 @@
-from BaseHTTPServer import HTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
-from utils.logger import RoboLogger
-from interfaces.python_interface import *
-from sys import argv
-from communication.msging import *
+from logger import RoboLogger
 import json
-import os
 from flask import Flask, send_from_directory, request
 
 app = Flask(__name__)
