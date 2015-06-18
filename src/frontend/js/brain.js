@@ -24,15 +24,21 @@ function DisplayElement(big_image_name, options_image_name,
 	this.open_interaction_window = open_interaction_window;
 }
 
-function DecorationElement(image_name, inner_form_image_name, connector_height_px) {
+function DecorationElement(image_name, inner_form_image_name, connector_height_px, interactive_location,
+	                    open_interaction_window) {
 	this.image_name = image_name;
 	this.inner_form_image_name = inner_form_image_name;
 	this.connector_height_px = connector_height_px;
+	
+	this.interactive_location = interactive_location || null;
+	this.open_interaction_window = open_interaction_window || null;
 }
 
-function ImagePosition(x, y) {
+function ImagePosition(x, y, width, height) {
 	this.x = x;
 	this.y = y;
+	this.width = width || 50;
+	this.height = height || 50;
 }
 
 function VisibleComponent(name, object) {
@@ -85,7 +91,7 @@ decoration_component["lesson_not_done"] = new DecorationElement("images/undone_l
 decoration_component["lesson_done"] = new DecorationElement("images/done_lesson_icon.png", null, 0);
 decoration_component["lesson_square"] = new DecorationElement("images/squere_lesson_icon.png", null, 0);
 decoration_component["loop_start"] = new DecorationElement(null, "images/loop_block_left_side.png", 89);
-decoration_component["loop_end"] = new DecorationElement(null, "images/loop_block_rightt_side.png", 152);
+decoration_component["loop_end"] = new DecorationElement(null, "images/loop_block_rightt_side.png", 152, new ImagePosition(85, 63, 50, 50), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/loop_block_middle.png", 89);
 decoration_component["window_field"] = new DecorationElement("images/interaction/calculator_window_field.png", null, 0);
 
@@ -200,14 +206,30 @@ function square_lesson_calculator(data) {
 }
 
 function square_lesson_calculator_closed(data) {
-	var add_next_block = PIXI.Sprite.fromImage("images/add_next_block_small_window.png");
-	add_next_block.position.x = 255;
-	add_next_block.position.y = 450;
-	add_next_block.interactive = true;
-	add_next_block.remove_on_bg_click = true;
-	add_next_block.remove_on_obj_click = true;
-	add_next_block.name = "add_next_block_small_window";
-	STAGE.addChild(add_next_block);
+	var initiator_name = data.detail;
+	switch (initiator_name) {
+		case "loop_end":
+			var add_next_block = PIXI.Sprite.fromImage("images/hit-_run_small_window.png");
+			add_next_block.position.x = 500;
+			add_next_block.position.y = 600;
+			add_next_block.interactive = true;
+			add_next_block.remove_on_bg_click = true;
+			add_next_block.remove_on_obj_click = true;
+			add_next_block.name = "_run_small_window";
+			STAGE.addChild(add_next_block);
+			break;
+		case "go_forward":
+			var add_next_block = PIXI.Sprite.fromImage("images/add_next_block_small_window.png");
+			add_next_block.position.x = 255;
+			add_next_block.position.y = 450;
+			add_next_block.interactive = true;
+			add_next_block.remove_on_bg_click = true;
+			add_next_block.remove_on_obj_click = true;
+			add_next_block.name = "add_next_block_small_window";
+			STAGE.addChild(add_next_block);
+			break;
+	}
+	
 }
 
 function square_lesson_angle_closed(data) {
@@ -233,6 +255,18 @@ function square_lesson_loop_created(data) {
 	STAGE.addChild(add_next_block);
 }
 
+function square_lesson_code_submition_done(data) {
+	gray_shadow();
+	var add_next_block = PIXI.Sprite.fromImage("images/end_level_1_window.png");
+	add_next_block.position.x = 300;
+	add_next_block.position.y = 250;
+	add_next_block.interactive = true;
+	add_next_block.remove_on_bg_click = true;
+	add_next_block.remove_on_obj_click = true;
+	add_next_block.name = "end_level_1_window";
+	STAGE.addChild(add_next_block);
+}
+
 
 var CURRENT_SELECTED_LESSON = null;
 var LESSONS = [new Lesson("Square", decoration_component["lesson_square"].image_name, {'lesson_load': square_lesson, 
@@ -241,6 +275,7 @@ var LESSONS = [new Lesson("Square", decoration_component["lesson_square"].image_
 																					   'calculator_closed': square_lesson_calculator_closed, 
 																					   'angle_closed': square_lesson_angle_closed,
 																					   'loop_creation_end': square_lesson_loop_created,
+																					   'code_submition_done': square_lesson_code_submition_done,
 																					   "options_window_openned": square_lesson_options_window}), 
                new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
                new Lesson("Square", decoration_component["lesson_square"].image_name, null),
@@ -313,7 +348,7 @@ function submit_number(data) {
 		remove_gray_shadow();
 		STAGE.removeChild(target.parent);
 		
-		var event = new CustomEvent('calculator_closed');
+		var event = new CustomEvent('calculator_closed', {'detail': target.initiator.name});
 		document.dispatchEvent(event);
 	}
 }
@@ -772,6 +807,7 @@ function add_bigger_image(data) {
 	bigger_image.buttonMode = true;
 	add_dragging_events(bigger_image);
 	
+	bigger_image.name = this.to_add_image.reference_name;
 	bigger_image.open_interaction_window = component.open_interaction_window;
 	bigger_image.interactive_rectangle = new PIXI.Rectangle(bigger_image.position.x + component.interactive_location.x, 
 		                                                    bigger_image.position.y + component.interactive_location.y, 
@@ -864,6 +900,36 @@ function fill_with_back_ground(start_index, end_index, reference_name, image_nam
 	}
 }
 
+function touchable_image_click_event(data) {
+	var local_location = data.data.getLocalPosition(data.target);
+    if (data.target.interactive_rectangle.contains(local_location.x, local_location.y)) {
+    	global_click_event();
+    	data.target.open_interaction_window(data.target);
+    } 
+}
+
+function add_interactive_part(name, component, sprite) {
+	var interactive_location = component.interactive_location;
+	
+	var interactive_rectangle = new PIXI.Rectangle(interactive_location.x - interactive_location.width, 
+		                                     interactive_location.y - interactive_location.height, 
+		                                     interactive_location.width, interactive_location.height);
+	sprite.interactive_rectangle = interactive_rectangle;
+	
+	sprite.interactive = true;
+	sprite.click = sprite.tap = touchable_image_click_event;	
+	sprite.open_interaction_window = component.open_interaction_window;    
+	sprite.name = name;                               
+	
+	var text = new PIXI.Text("", {font: '45px Ariel', fill: '#FF9069'});
+	text.anchor.set(1);
+	text.position.x = interactive_location.x;
+	text.position.y = interactive_location.y;
+	sprite.addChild(text);
+	
+	sprite.parameter = text;
+}
+
 function convert_to_combines_structure(start_index, end_index) {
 	for (var i = start_index; i <= end_index; i++) {
 		var current = DISPLAYED_ELEMENT[i];
@@ -880,6 +946,8 @@ function convert_to_combines_structure(start_index, end_index) {
 	var end_element = DISPLAYED_ELEMENT[end_index + 1];
 	var end_sprite = create_decorative_sprite("loop_end", decoration_component["loop_end"].inner_form_image_name, 
 														end_element.object.position.x, end_element.object.position.y);
+														
+	add_interactive_part("loop_end", decoration_component["loop_end"], end_sprite);
 	DISPLAYED_ELEMENT.splice(end_index + 2, 0, new VisibleComponent("loop_end", end_sprite));
 	STAGE.addChild(end_sprite);
 	return end_sprite;
@@ -1060,6 +1128,16 @@ function send_to_server(data, url) {
   });
 }
 
+function switch_to_waiting(button) {
+	var original_texture = button.texture;
+	button.texture = PIXI.Texture.fromImage("images/run_button_status_loading.png");
+	setTimeout(function(){
+    	button.texture = original_texture;
+    	var event = new CustomEvent('code_submition_done');
+		document.dispatchEvent(event);
+	}, 5000);
+}
+
 function submit_code(data) {
 	global_click_event();
 	var components_size = DISPLAYED_ELEMENT.length;
@@ -1081,6 +1159,8 @@ function submit_code(data) {
 	}
 	
 	send_to_server(code, "/api/execute_code");
+	
+	switch_to_waiting(data.target);
 }
 
 function select_lesson_click(data) {
