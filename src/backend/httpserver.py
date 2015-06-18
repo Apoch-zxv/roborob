@@ -11,7 +11,7 @@ else:
 
 app = Flask(__name__)
 
-WEB_PATH = "../../../frontend"
+WEB_PATH = "../frontend"
 
 class RoboRobRequestHandler(object):
     INSTANCE = None
@@ -39,8 +39,14 @@ def execute_code():
 @app.route('/')
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path="index.html"):
+    print "Get request", path
     return send_from_directory(WEB_PATH, path)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    if platform.node() != "DrawBot":
+        print "Debug mode using dummy interface"
+        app.run(debug = True)
+    else:
+        print "Running in production"
+        app.run(host = "0.0.0.0", port = 80)
