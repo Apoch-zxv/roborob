@@ -95,6 +95,7 @@ decoration_component["lesson_not_done"] = new DecorationElement("images/undone_l
 decoration_component["lesson_done"] = new DecorationElement("images/done_lesson_icon.png", null, 0);
 decoration_component["lesson_square"] = new DecorationElement("images/squere_lesson_icon.png", null, 0);
 decoration_component["function_create"] = new DecorationElement(null, "images/make_function_button.png", 89);
+decoration_component["function_block"] = new DecorationElement("images/function_block.png", null, 138);
 decoration_component["loop_start"] = new DecorationElement(null, "images/loop_block_left_side.png", 89);
 decoration_component["loop_end"] = new DecorationElement(null, "images/loop_block_rightt_side.png", 152, new ImagePosition(85, 63, 50, 50), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/loop_block_middle.png", 89);
@@ -636,14 +637,15 @@ function add_space(event) {
 
 function submit_keyboard_text(event) {
 	var target = event.target;	
+	var initiator = target.parent.initiator;
 	remove_gray_shadow();
 	STAGE.removeChild(target.parent);
 	
-	if (target.initiator.on_keyboard_finish != null) {
-		target.initiator.on_keyboard_finish(target.initiator, target.text_field.text);
+	if (initiator.on_keyboard_finish != null) {
+		initiator.on_keyboard_finish(initiator, target.parent.text_field.text);
 	}
 	
-	var event = new CustomEvent('keyboard_closed', {'detail': target.initiator.name});
+	var event = new CustomEvent('keyboard_closed', {'detail': initiator.name});
 	document.dispatchEvent(event);
 }
 
@@ -1003,6 +1005,7 @@ function create_decorative_sprite(reference_name, image_name, x, y, force_y) {
 function fill_with_back_ground(start_index, end_index, reference_name, image_name) {
 	var first_element = DISPLAYED_ELEMENT[start_index];
 	var end_element = DISPLAYED_ELEMENT[end_index];
+	var bg_elements = [];
 	
 	var start_x = first_element.object.position.x;
 	var stop_x = end_element.object.position.x;
@@ -1012,9 +1015,11 @@ function fill_with_back_ground(start_index, end_index, reference_name, image_nam
 	while (curr_x <= stop_x) {
 		var single_component = create_decorative_sprite(reference_name, image_name, curr_x, bg_y_axis);
 		STAGE.addChildAt(single_component, 1);
-		//STAGE.addChild(single_component);
+		bg_elements.push(single_component);
 		curr_x += single_component.width;
 	}
+	
+	end_element.bg_elements = bg_elements;
 }
 
 function touchable_image_click_event(data) {
@@ -1047,9 +1052,75 @@ function add_interactive_part(name, component, sprite) {
 	sprite.parameter = text;
 }
 
-function init_function_create(function_create) {
+function find_function_start_index(last_target) {
+	var loop_start_index = -1;
+	for (var i = 0; i < DISPLAYED_ELEMENT.length; i ++) {
+		var curr_element = DISPLAYED_ELEMENT[i];
+		
+		if (curr_element.name == "loop_start") {
+			loop_start_index = i;
+		}
+		
+		if (curr_element.object == last_target) {
+			break;
+		}
+	}
+	
+	if (loop_start_index == -1) {
+		console.log("Error failed locating function start");
+	}
+	
+	return loop_start_index;
+}
+
+function function_init(function_name, function_code, x) {
+	var function_sprite = create_decorative_sprite("function_block", decoration_component["function_block"].image_name, x);
+	var text = new PIXI.Text(function_name, {font: '45px Ariel', fill: '#FF9069'});
+	text.anchor.set(1);
+	text.position.x = 225;
+	text.position.y = 212;
+	function_sprite.addChild(text);
+	
+	return function_sprite;
+}
+
+function position_function(function_sprite, function_start_index, function_end_index) {
+	for (var i = function_start_index; i <= function_end_index; i++) {
+		var curr_component = DISPLAYED_ELEMENT[i];
+		
+		remove_from_stage_object(curr_component.object);
+		if (curr_component.name == "loop_end") {
+			remove_from_stage_object(curr_component.object.function_create);
+			for (var i = 0; i < curr_component.bg_elements.length; i ++) {
+				remove_from_stage_object(curr_component.bg_elements[i]);
+			}
+		} 
+	}
+	
+	DISPLAYED_ELEMENT.splice(function_start_index, function_end_index - function_start_index + 1, new VisibleComponent("function_block", function_sprite));
+	STAGE.addChild(function_sprite);
+}
+
+function function_create_shrink(target, function_name) {
+	var last_function_element = target.container_element;
+	var function_start_index = find_function_start_index(last_function_element);
+	var function_end_index = find_displayed_object_index(last_function_element);
+	
+	var function_code = extract_code(DISPLAYED_ELEMENT, function_start_index, function_end_index);
+	var function_sprite = function_init(function_name, function_code, DISPLAYED_ELEMENT[function_start_index].object.position.x);	
+	position_function(function_sprite, function_start_index, function_end_index);
+	recalculate_positions();
+}
+
+function open_keyboard_caller(event) {
+	open_keyboard(event.target);
+}
+
+function init_function_create(function_create, container_element) {
 	function_create.interactive = true;
-	function_create.click = function_create.tap = open_keyboard;
+	function_create.click = function_create.tap = open_keyboard_caller;
+	function_create.on_keyboard_finish = function_create_shrink;
+	function_create.container_element = container_element;
 }
 
 function convert_to_combines_structure(start_index, end_index) {
@@ -1075,7 +1146,7 @@ function convert_to_combines_structure(start_index, end_index) {
 	
 	end_sprite.function_create = create_decorative_sprite("function_create", decoration_component["function_create"].inner_form_image_name, 
 														end_sprite.position.x - 100, end_sprite.position.y, true);
-	init_function_create(end_sprite.function_create);												
+	init_function_create(end_sprite.function_create, end_sprite);												
 	STAGE.addChild(end_sprite.function_create);
 	return end_sprite;
 }
@@ -1265,12 +1336,10 @@ function switch_to_waiting(button) {
 	}, 5000);
 }
 
-function submit_code(data) {
-	global_click_event();
-	var components_size = DISPLAYED_ELEMENT.length;
+function extract_code(data, start_index, end_index) {
 	var code = [];
 	var curr_code = code;
-	for (var i = 0; i < components_size; i++) {
+	for (var i = start_index; i <= end_index; i++) {
 		var curr_component = DISPLAYED_ELEMENT[i];
 		
 		if (curr_component.name == "loop_start") {
@@ -1284,6 +1353,13 @@ function submit_code(data) {
 			curr_code.push(curr_component.name);		
 		}
 	}
+	
+	return code;
+}
+
+function submit_code(data) {
+	global_click_event();
+	var code = extract_code(DISPLAYED_ELEMENT, 0, DISPLAYED_ELEMENT.length);
 	
 	send_to_server(code, "/api/execute_code");
 	
