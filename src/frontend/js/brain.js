@@ -93,7 +93,6 @@ decoration_component["start_code"] = new DecorationElement("images/start_code.pn
 decoration_component["robot_face"] = new DecorationElement("images/robot_face.png", null, 0);
 decoration_component["lesson_not_done"] = new DecorationElement("images/undone_lesson_icon.png", null, 0);
 decoration_component["lesson_done"] = new DecorationElement("images/done_lesson_icon.png", null, 0);
-decoration_component["lesson_square"] = new DecorationElement("images/squere_lesson_icon.png", null, 0);
 decoration_component["function_create"] = new DecorationElement(null, "images/make_function_button.png", 89);
 decoration_component["function_block"] = new DecorationElement("images/function_block.png", null, 138);
 decoration_component["loop_start"] = new DecorationElement(null, "images/loop_block_left_side.png", 89);
@@ -117,6 +116,10 @@ decoration_component["calculator_window_ok_button"] = new DecorationElement("ima
 
 for (var i = 0; i <= 9; i++) {
 	decoration_component["calculator_digit_{0}".format(i)] = new DecorationElement("images/interaction/calculator_window_{0}_button.png".format(i), null, 0);
+}
+
+for (var i = 1; i <= 10; i++) {
+	decoration_component["lesson_{0}".format(i)] = new DecorationElement("images/{0}_lesson_icon.png".format(i), null, 0);
 }
 
 
@@ -163,6 +166,16 @@ function square_lesson_bg_click(data) {
 				var first_block = PIXI.Sprite.fromImage("images/add_first_block_small_window.png");
 				first_block.position.x = 45;
 				first_block.position.y = 470;
+				first_block.interactive = true;
+				first_block.remove_on_bg_click = true;
+				first_block.remove_on_obj_click = true;
+				first_block.name = "square_first_block";
+				STAGE.addChild(first_block);
+				break;
+			case "well_done_its_working_window":
+				var first_block = PIXI.Sprite.fromImage("images/use_function_small_window.png");
+				first_block.position.x = 65;
+				first_block.position.y = 130;
 				first_block.interactive = true;
 				first_block.remove_on_bg_click = true;
 				first_block.remove_on_obj_click = true;
@@ -263,9 +276,26 @@ function square_lesson_loop_created(data) {
 
 function square_lesson_code_submition_done(data) {
 	gray_shadow();
-	var add_next_block = PIXI.Sprite.fromImage("images/end_level_1_window.png");
+	var add_next_block = PIXI.Sprite.fromImage("images/well_done_its_working_window.png");
 	add_next_block.position.x = 300;
 	add_next_block.position.y = 250;
+	add_next_block.interactive = true;
+	add_next_block.remove_on_bg_click = true;
+	add_next_block.remove_on_obj_click = true;
+	add_next_block.name = "well_done_its_working_window";
+	STAGE.addChild(add_next_block);
+}
+
+function square_lesson_keyboard_opened(data) {
+	var keyboard_text = data.detail;
+	keyboard_text.text = "Type \"Square\"";
+}
+
+function square_lesson_keyboard_closed(data) {
+	gray_shadow();
+	var add_next_block = PIXI.Sprite.fromImage("images/end_level_1_window.png");
+	add_next_block.position.x = 275;
+	add_next_block.position.y = 100;
 	add_next_block.interactive = true;
 	add_next_block.remove_on_bg_click = true;
 	add_next_block.remove_on_obj_click = true;
@@ -275,23 +305,25 @@ function square_lesson_code_submition_done(data) {
 
 
 var CURRENT_SELECTED_LESSON = null;
-var LESSONS = [new Lesson("Square", decoration_component["lesson_square"].image_name, {'lesson_load': square_lesson, 
+var LESSONS = [new Lesson("Square", decoration_component["lesson_1"].image_name, {'lesson_load': square_lesson, 
 																					   'back_ground_click': square_lesson_bg_click, 
 																					   'calculator_openned': square_lesson_calculator, 
 																					   'calculator_closed': square_lesson_calculator_closed, 
 																					   'angle_closed': square_lesson_angle_closed,
 																					   'loop_creation_end': square_lesson_loop_created,
 																					   'code_submition_done': square_lesson_code_submition_done,
+																					   "keyboard_openned": square_lesson_keyboard_opened,
+																					   "keyboard_closed": square_lesson_keyboard_closed,
 																					   "options_window_openned": square_lesson_options_window}), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null),
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null),
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null), 
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null),
-               new Lesson("Square", decoration_component["lesson_square"].image_name, null)];
+               new Lesson("2", decoration_component["lesson_2"].image_name, null), 
+               new Lesson("3", decoration_component["lesson_3"].image_name, null),
+               new Lesson("4", decoration_component["lesson_4"].image_name, null), 
+               new Lesson("5", decoration_component["lesson_5"].image_name, null), 
+               new Lesson("6", decoration_component["lesson_6"].image_name, null),
+               new Lesson("7", decoration_component["lesson_7"].image_name, null), 
+               new Lesson("8", decoration_component["lesson_8"].image_name, null), 
+               new Lesson("9", decoration_component["lesson_9"].image_name, null),
+               new Lesson("10", decoration_component["lesson_10"].image_name, null)];
 
 // create a RENDERER instance.
 var RENDERER = PIXI.autoDetectRenderer(1280, 800);
@@ -729,6 +761,9 @@ function open_keyboard(initiator) {
 	add_line(keyboard_bg, fourth_line, calc_field.position.x + calc_field.width, curr_y);
 	
 	STAGE.addChild(keyboard_bg);
+	
+	var event = new CustomEvent('keyboard_openned', {'detail': text_field});
+	document.dispatchEvent(event);
 }
 
 function gray_shadow() {
@@ -1110,6 +1145,9 @@ function function_create_shrink(target, function_name) {
 	var function_sprite = function_init(function_name, function_code, DISPLAYED_ELEMENT[function_start_index].object.position.x);	
 	position_function(function_sprite, function_start_index, function_end_index);
 	recalculate_positions();
+	
+	var event = new CustomEvent('function_block_created');
+	document.dispatchEvent(event);
 }
 
 function open_keyboard_caller(event) {
@@ -1118,6 +1156,7 @@ function open_keyboard_caller(event) {
 
 function init_function_create(function_create, container_element) {
 	function_create.interactive = true;
+	function_create.name = "function_create";
 	function_create.click = function_create.tap = open_keyboard_caller;
 	function_create.on_keyboard_finish = function_create_shrink;
 	function_create.container_element = container_element;
@@ -1359,7 +1398,7 @@ function extract_code(data, start_index, end_index) {
 
 function submit_code(data) {
 	global_click_event();
-	var code = extract_code(DISPLAYED_ELEMENT, 0, DISPLAYED_ELEMENT.length);
+	var code = extract_code(DISPLAYED_ELEMENT, 0, DISPLAYED_ELEMENT.length - 1);
 	
 	send_to_server(code, "/api/execute_code");
 	
