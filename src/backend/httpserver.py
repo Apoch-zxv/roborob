@@ -39,7 +39,6 @@ def execute_code():
 @app.route('/')
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path="index.html"):
-    print "Get request", path
     return send_from_directory(WEB_PATH, path)
 
 
