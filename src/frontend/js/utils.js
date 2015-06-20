@@ -36,7 +36,7 @@ function remove_gray_shadow() {
 	STAGE.removeChild(GRAY_BG);
 }
 
-function move_object(object, dest) {
+function move_object(object, dest, speed) {
 	createjs.Tween.get(object)
                  .to({x:dest.x, y:dest.y}, 600);
 }

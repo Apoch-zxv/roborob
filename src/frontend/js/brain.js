@@ -30,14 +30,14 @@ programming_components["go_backward"] = new DisplayElement("images/draw_board/go
                                                            "images/draw_board/go_backward_block_inside_loop.png", 
                                                            "go_backward", 59, 
                                                            new ImagePosition(30, 80), open_calculator);
-programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_right_block.png", 
+programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_left_block.png", 
                                                          "images/draw_board/turn_left_icon.png", 
-                                                         "images/draw_board/go_forward_block_inside_loop.png", 
+                                                         "images/draw_board/turn_left_block_inside_loop.png", 
                                                          "turn_left", 55, 
                                                          new ImagePosition(80, 90), open_angle);
-programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_left_block.png", 
-                                                          "images/draw_board/turn_left_icon.png", 
-                                                          "images/draw_board/turn_left_block_inside_loop.png", 
+programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
+                                                          "images/draw_board/turn_right_icon.png", 
+                                                          "images/draw_board/turn_right_block_inside_loop.png", 
                                                           "turn_right", 55, 
                                                           new ImagePosition(80, 90), open_angle);
                                                           
@@ -474,6 +474,7 @@ function onDragStart(event)
 	    	x: this.position.x, 
 	    	y: this.position.y
 		};
+		this.previous_x = this.data.global.x;
 		this.alpha = 0.5;
 		this.dragging = true;
 	}
@@ -491,7 +492,7 @@ function onDragEnd()
 	    var closest_object = find_close_enough(this, MIN_GROUP_TOGETHER_DISTANCE); 
 	    
 	    if (closest_object == null) {
-			move_object(this, this.original_position);
+			move_object(this, this.original_position, 100);
 	    } else {
 	    	this.position = this.original_position;
 	    	group_elements(this, closest_object.object);
@@ -505,8 +506,8 @@ function onDragMove()
 {
     if (this.dragging)
     {
-        var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x;
+        this.position.x = this.position.x + this.data.global.x - this.previous_x;
+        this.previous_x = this.data.global.x;
     }
 }
     
@@ -674,8 +675,8 @@ function init() {
 	    loader.add(assetsToLoad[i], assetsToLoad[i]);
 	}
 	
-	init_choose_screen();
-	init_splash_screen();
+	// init_choose_screen();
+	// init_splash_screen();
 	
 	loader.load();
  
