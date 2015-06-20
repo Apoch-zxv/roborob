@@ -111,7 +111,7 @@ function open_keyboard(initiator) {
 	calc_field.interactive = true;
 	keyboard_bg.addChild(calc_field);
 	
-	var text_field = new PIXI.Text('', {font: '45px Ariel', fill: '#FF9069'});
+	var text_field = new PIXI.Text('', {font: '45px Ariel', fill: '#E29D2B'});
 	text_field.position.x = 50;
 	text_field.position.y = 100;
 	text_field.interactive = true;

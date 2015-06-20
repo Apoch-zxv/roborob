@@ -221,16 +221,16 @@ function open_angle(initiator) {
 	
 	angle.addChild(needle_rectangle);
 	
-	var number = new PIXI.Text('0', {font: '45px Ariel', fill: '#FF9069'});
-	number.anchor.set(1);
-	number.position.x = 185;
-	number.position.y = 535;
+	var number = new PIXI.extras.BitmapText('0', {font: '35px Fregat', align: "center"});
+	number.tint = 0xEE7842;
+	number.position.x = 125;
+	number.position.y = 485;
 	circle.number = number;
 	angle.addChild(number);
 	
 	var submit_angle = PIXI.Sprite.fromImage("images/angle/angels_window_ok_button.png");
-	submit_angle.position.x = number.position.x + number.width + 20;
-	submit_angle.position.y = number.position.y - number.height - 13;
+	submit_angle.position.x = number.position.x + 80;
+	submit_angle.position.y = 485;
 	submit_angle.interactive = true;
 	submit_angle.buttonMode = true;
 	submit_angle.initiator = initiator;

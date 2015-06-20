@@ -3,3 +3,13 @@ body {
     padding: 0;
     background-color: #000000;
 }
+
+@font-face {
+  font-family: 'FregatBold';
+  src: url('fonts/FREGAT_BOLD.OTF');
+}
+
+@font-face {
+  font-family: 'FregatRegular';
+  src: url('fonts/FREGAT_REGULAR.OTF');
+}

@@ -47,7 +47,7 @@ function select_lesson(lesson) {
 		document.dispatchEvent(event);
 	}
 	
-	reposition_all_lessons();
+	//reposition_all_lessons();
 }
 
 function reposition_all_lessons() {
@@ -140,6 +140,8 @@ function square_lesson_options_window(data) {
 function square_lesson_calculator(data) {
 	var number = data.detail;
 	number.text = "Type 20";
+	number.updateText();
+	number.position.x = number.maximal_position.x - number.textWidth;
 }
 
 function square_lesson_calculator_closed(data) {
@@ -249,15 +251,15 @@ var LESSONS = [new Lesson("Square", decoration_component["lesson_1"].image_name,
                new Lesson("10", decoration_component["lesson_10"].image_name, null)];
 
 function add_lesson_icons() {
-	for (var i = 0; i < LESSONS.length; i ++) {
+	for (var i = LESSONS.length - 1; i >= 0; i --) {
 		var lesson = LESSONS[i];
 		var lesson_select = PIXI.Sprite.fromImage(decoration_component["lesson_not_done"].image_name);
 		var lesson_selected = PIXI.Texture.fromImage(lesson.lesson_image);
 		lesson.texture_not_done = lesson_select.texture;
 		lesson.texture_selected = lesson_selected;
 		lesson_select.anchor.set(0.5);
-		lesson_select.position.x = 650 + i * 60;
-		lesson_select.position.y = 50;
+		lesson_select.position.x = 1211 - (LESSONS.length - 1 - i) * 65;
+		lesson_select.position.y = 59;
 		lesson_select.interactive = true;
 		lesson_select.buttonMode = true;
 		lesson_select.lesson = lesson;

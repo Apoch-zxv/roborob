@@ -6,10 +6,15 @@ function add_digit(data) {
 	global_click_event();
 	var target = data.target;
 	if (target.state.initial_state) {
-		target.number.text = "";
+		target.number.text = target.value.toString();
 		target.state.initial_state = false;
+		target.number.updateText();
+		target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
+	} else {
+		target.number.text = target.number.text + target.value.toString();
+		target.number.updateText();
+		target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 	}
-	target.number.text = $.trim(target.number.text + target.value.toString());
 }
 
 function remove_all(data) {
@@ -18,6 +23,8 @@ function remove_all(data) {
 	if (!target.state.initial_state) {
 		target.number.text = "0";
 		target.state.initial_state = true;
+		target.number.updateText();
+		target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 	}
 }
 
@@ -27,9 +34,13 @@ function remove_last(data) {
 	if (!target.state.initial_state) {
 		if (target.number.text.length != 1) {
 			target.number.text = target.number.text.substr(0, target.number.text.length - 1);
+			target.number.updateText();
+			target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 		} else {
 			target.number.text = "0";
 			target.state.initial_state = true;
+			target.number.updateText();
+			target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 		}
 	}
 }
@@ -70,10 +81,18 @@ function open_calculator(initiator) {
 	calc_field.position.y = curr_y_position;
 	calc_window.addChild(calc_field);
 	
-	var number = new PIXI.Text('0', {font: '45px Ariel', fill: '#FF9069'});
-	number.anchor.set(1);
-	number.position.x = calc_field.width;
-	number.position.y = calc_field.height;
+	for (var key in PIXI.extras.BitmapText.fonts) {
+		console.log(key);
+		console.log(PIXI.extras.BitmapText.fonts[key]);
+	}
+	
+	var number = new PIXI.extras.BitmapText('0', {font: '30px Fregat', align: "center"});
+	number.tint = 0xEE7842;
+	number.position.x = calc_field.width - 15;
+	number.position.y = calc_field.height - 42;
+	number.maximal_position = new PIXI.Point(number.position.x, number.position.y);
+	number.updateText();
+	number.position.x = number.maximal_position.x - number.textWidth;
 	calc_field.addChild(number);
 	
 	curr_y_position += calc_field.height + y_space;

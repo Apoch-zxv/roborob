@@ -17,29 +17,29 @@ function VisibleComponent(name, object) {
 }
 
 var MIN_GROUP_TOGETHER_DISTANCE = 100;
-var MAIN_Y_AXIS = 400;
+var MAIN_Y_AXIS = 388;
 var X_CORRECTION_FACTOR = 1;
 
 programming_components["go_forward"] = new DisplayElement("images/draw_board/go_forward_block.png", 
                                                           "images/draw_board/forward_icon.png", 
                                                           "images/draw_board/go_forward_block_inside_loop.png", 
                                                           "go_forward", 60, 
-                                                          new ImagePosition(30, 80), open_calculator);
+                                                          new ImagePosition(33, 89), open_calculator);
 programming_components["go_backward"] = new DisplayElement("images/draw_board/go_backward_block.png", 
                                                            "images/draw_board/backward_icon.png", 
                                                            "images/draw_board/go_backward_block_inside_loop.png", 
                                                            "go_backward", 59, 
-                                                           new ImagePosition(30, 80), open_calculator);
+                                                           new ImagePosition(86, 87), open_calculator);
 programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_left_block.png", 
                                                          "images/draw_board/turn_left_icon.png", 
                                                          "images/draw_board/turn_left_block_inside_loop.png", 
                                                          "turn_left", 59, 
-                                                         new ImagePosition(80, 90), open_angle);
+                                                         new ImagePosition(61, 93), open_angle);
 programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
                                                           "images/draw_board/turn_right_icon.png", 
                                                           "images/draw_board/turn_right_block_inside_loop.png", 
                                                           "turn_right", 59, 
-                                                          new ImagePosition(80, 90), open_angle);
+                                                          new ImagePosition(96, 92), open_angle);
                                                           
 decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
 decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
@@ -95,9 +95,9 @@ function init_options_window(previous_object, previous_connector) {
 	options_window.position.x = previous_object.position.x + previous_object.width - X_CORRECTION_FACTOR;	options_window.position.y = MAIN_Y_AXIS - decoration_component["arrows_menu"].connector_height_px;
 	options_window.interactive = true;
 	
-	var x_offset = 50;
-	var y_current_offset = 40;
-	var extra_y = 15;
+	var x_offset = 62;
+	var y_current_offset = 42;
+	var extra_y = 25;
 	var next_child = create_single_option(previous_object, programming_components["go_forward"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
@@ -106,11 +106,11 @@ function init_options_window(previous_object, previous_connector) {
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
-	next_child = create_single_option(previous_object, programming_components["turn_left"], x_offset, y_current_offset, previous_connector);
+	next_child = create_single_option(previous_object, programming_components["turn_right"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
-	next_child = create_single_option(previous_object, programming_components["turn_right"], x_offset, y_current_offset, previous_connector);
+	next_child = create_single_option(previous_object, programming_components["turn_left"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
@@ -207,10 +207,10 @@ function add_bigger_image(data) {
 		                                                    bigger_image.position.y + component.interactive_location.y, 
 		                                                    50, 50);
 	
-	var text = new PIXI.Text("", {font: '45px Ariel', fill: '#FF9069'});
-	text.anchor.set(1);
-	text.position.x = component.interactive_location.x + 50;
-	text.position.y = component.interactive_location.y + 50;
+	var text = new PIXI.extras.BitmapText('', {font: '30px Fregat', align: "center"});
+	text.tint = 0xE29D2B;
+	text.position.x = component.interactive_location.x + 15;
+	text.position.y = component.interactive_location.y + 17;
 	bigger_image.addChild(text);
 	bigger_image.parameter = text;
 	
@@ -311,10 +311,10 @@ function add_interactive_part(name, component, sprite) {
 	sprite.open_interaction_window = component.open_interaction_window;    
 	sprite.name = name;                               
 	
-	var text = new PIXI.Text("", {font: '45px Ariel', fill: '#FF9069'});
-	text.anchor.set(1);
-	text.position.x = interactive_location.x;
-	text.position.y = interactive_location.y;
+	var text = new PIXI.extras.BitmapText('', {font: '30px Fregat', align: "center"});
+	text.tint = 0x60A860;
+	text.position.x = interactive_location.x - interactive_location.width + 21;
+	text.position.y = interactive_location.y - interactive_location.height + 13;
 	sprite.addChild(text);
 	
 	sprite.parameter = text;
@@ -667,7 +667,7 @@ function init() {
 	STAGE.addChild(bg);
 	
 	var start_code = PIXI.Sprite.fromImage(decoration_component["start_code"].image_name);
-	start_code.position.x = 50;
+	start_code.position.x = 40;
 	start_code.position.y = MAIN_Y_AXIS + decoration_component["start_code"].connector_height_px;
 	
 	start_code.interactive = true;
@@ -678,14 +678,20 @@ function init() {
 	add_stage_object(start_code, "start_code");
 	
 	var robot_face = PIXI.Sprite.fromImage(decoration_component["robot_face"].image_name);
-	robot_face.position.x = 0;
-	robot_face.position.y = 50;
+	robot_face.position.x = 94;
+	robot_face.position.y = 39;
 	robot_face.not_remove_when_cleared = true;
 	add_display_object(robot_face, "robot_face");
 	
+	var back_button = PIXI.Sprite.fromImage("images/general/back_button.png");
+	back_button.position.x = 40;
+	back_button.position.y = 50;
+	back_button.not_remove_when_cleared = true;
+	add_display_object(back_button, "back_button");
+	
 	var execute_code = PIXI.Sprite.fromImage("images/general/run_button_status_on.png");
-	execute_code.position.x = 1100;
-	execute_code.position.y = 600;
+	execute_code.position.x = 1079; 
+	execute_code.position.y = 594;
 	execute_code.interactive = true;
 	execute_code.buttonMode = true;
 	execute_code.not_remove_when_cleared = true;
@@ -737,19 +743,21 @@ function init() {
     		}
     	}
     }
+    
 	// create a new loader
 	loader = new PIXI.loaders.Loader();
 	var arrayLength = assetsToLoad.length;
 	for (var i = 0; i < arrayLength; i++) {
-		console.log(assetsToLoad[i]);
 	    loader.add(assetsToLoad[i], assetsToLoad[i]);
 	}
+	loader.add("fonts/fregat.fnt", { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT });
+	loader.load(function () {
+    	console.log('Finished loading');
+	});
 	
 	// init_choose_screen();
 	// init_splash_screen();
 	
-	loader.load();
- 
     requestAnimationFrame( animate );
 }
 

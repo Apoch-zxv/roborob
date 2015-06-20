@@ -98,6 +98,8 @@ function clear_board() {
 	for (var i = 0; i < to_remove.length; i++) {
 		STAGE.removeChild(to_remove[i]);
 	}
+	
+	DISPLAYED_ELEMENT.splice(1, DISPLAYED_ELEMENT.length - 2);
 }
 
 function bg_clicked(data) {
