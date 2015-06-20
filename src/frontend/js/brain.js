@@ -16,9 +16,9 @@ function VisibleComponent(name, object) {
 	this.object = object;
 }
 
-var MIN_GROUP_TOGETHER_DISTANCE = 30;
+var MIN_GROUP_TOGETHER_DISTANCE = 100;
 var MAIN_Y_AXIS = 400;
-var X_CORRECTION_FACTOR = 5;
+var X_CORRECTION_FACTOR = 1;
 
 programming_components["go_forward"] = new DisplayElement("images/draw_board/go_forward_block.png", 
                                                           "images/draw_board/forward_icon.png", 
@@ -33,24 +33,25 @@ programming_components["go_backward"] = new DisplayElement("images/draw_board/go
 programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_left_block.png", 
                                                          "images/draw_board/turn_left_icon.png", 
                                                          "images/draw_board/turn_left_block_inside_loop.png", 
-                                                         "turn_left", 55, 
+                                                         "turn_left", 59, 
                                                          new ImagePosition(80, 90), open_angle);
 programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
                                                           "images/draw_board/turn_right_icon.png", 
                                                           "images/draw_board/turn_right_block_inside_loop.png", 
-                                                          "turn_right", 55, 
+                                                          "turn_right", 59, 
                                                           new ImagePosition(80, 90), open_angle);
                                                           
 decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
 decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
-decoration_component["switch_block"] = new DecorationElement("images/draw_board/switch_block.png", "images/draw_board/switch_block_inside_loop.png", 0);
+//decoration_component["switch_block"] = new DecorationElement("images/draw_board/switch_block.png", "images/draw_board/switch_block_inside_loop.png", 0);
+decoration_component["switch_block"] = new DecorationElement("images/draw_board/first_add_block.png", "images/draw_board/first_add_block_inside_loop.png", 0);
 decoration_component["start_code"] = new DecorationElement("images/draw_board/first_add_block.png", "images/draw_board/first_add_block_inside_loop.png", 0);
 decoration_component["robot_face"] = new DecorationElement("images/general/robot_face.png", null, 0);
 
-decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 89);
+decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 93);
 decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 138);
 decoration_component["loop_start"] = new DecorationElement(null, "images/draw_board/loop_block_left_side.png", 89);
-decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 152, new ImagePosition(85, 63, 50, 50), open_calculator);
+decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 165, new ImagePosition(85, 63, 50, 50), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/draw_board/loop_block_middle.png", 89);
 
 decoration_component["keyboard_field"] = new DecorationElement("images/keyboard/keyboard_field.png", null, 0);
@@ -132,7 +133,8 @@ function create_single_option(initiating_object, component, x_offset, y_offset, 
 	return single_option;
 }
 
-function add_next_button_to_the_right(current_object) {
+function add_next_button_to_the_right(current_object, is_add_to_stage_param) {
+	var is_add_to_stage = (typeof is_add_to_stage_param === 'undefined') ? true : is_add_to_stage_param;
 	var start_code = PIXI.Sprite.fromImage(decoration_component["add_block"].image_name);
 	start_code.position.x = current_object.position.x + current_object.width - X_CORRECTION_FACTOR;
 	start_code.position.y = MAIN_Y_AXIS - decoration_component["add_block"].connector_height_px;
@@ -141,7 +143,9 @@ function add_next_button_to_the_right(current_object) {
 	start_code.buttonMode = true;
 	
 	start_code.click = start_code.tap = open_options_window;
-	add_stage_object(start_code, "add_block");
+	if (is_add_to_stage) {
+		add_stage_object(start_code, "add_block");
+	}
 	
 	return start_code;
 }
@@ -169,11 +173,19 @@ function recalculate_positions() {
 		if (is_programmable_component(curr_element.name)) {
 			curr_element.object.position.x = prev_element.object.position.x + prev_element.object.width - X_CORRECTION_FACTOR;
 		} else if(is_decoration_component(curr_element.name)) {
-			curr_element.object.position.x = prev_element.object.position.x + prev_element.object.width - X_CORRECTION_FACTOR;
+			if (curr_element.name == "switch_block") {
+				curr_element.object.position.x = prev_element.object.position.x - X_CORRECTION_FACTOR;
+			} else if (curr_element.name == "loop_end") {
+				curr_element.object.position.x = prev_element.object.position.x + prev_element.object.width - (curr_element.object.width - 43);
+			} else if (prev_element.name == "loop_start") {
+				curr_element.object.position.x = prev_element.object.position.x + 56;
+			} else {
+				curr_element.object.position.x = prev_element.object.position.x + prev_element.object.width - X_CORRECTION_FACTOR;
+			}
 		}
 		
 		if (curr_element.name == "loop_end") {
-			curr_element.object.function_create.position.x = curr_element.object.position.x - 100;
+			curr_element.object.function_create.position.x = curr_element.object.position.x - 107;
 		}
 	}
 }
@@ -232,7 +244,7 @@ function find_displayed_object_index(object) {
 	return null;
 }
 
-function create_inner_object(object) {
+function replace_to_inner_texture(object) {
 	var component = null;
 	if (is_programmable_component(object.name)) {
 		component = programming_components[object.name];
@@ -243,14 +255,8 @@ function create_inner_object(object) {
 		return;
 	}
 	
-	var inner_image = PIXI.Sprite.fromImage(component.inner_form_image_name);
-	inner_image.position.x = object.object.position.x;
-	inner_image.position.y = object.object.position.y;
-	inner_image.interactive = true;
-	inner_image.buttonMode = true;
-	add_dragging_events(inner_image);
-	
-	return inner_image;
+	var inner_texture = PIXI.Texture.fromImage(component.inner_form_image_name);
+	object.object.texture = inner_texture;
 }
 
 function create_decorative_sprite(reference_name, image_name, x, y, force_y) {
@@ -269,7 +275,7 @@ function fill_with_back_ground(start_index, end_index, reference_name, image_nam
 	var end_element = DISPLAYED_ELEMENT[end_index];
 	var bg_elements = [];
 	
-	var start_x = first_element.object.position.x;
+	var start_x = first_element.object.position.x + first_element.object.width;
 	var stop_x = end_element.object.position.x;
 	var bg_y_axis = MAIN_Y_AXIS - decoration_component[reference_name].connector_height_px;
 	
@@ -388,29 +394,46 @@ function init_function_create(function_create, container_element) {
 function convert_to_combines_structure(start_index, end_index) {
 	for (var i = start_index; i <= end_index; i++) {
 		var current = DISPLAYED_ELEMENT[i];
-		var inner_object = create_inner_object(current);
-		replace_object(current, new VisibleComponent(current.name, inner_object));
+		replace_to_inner_texture(current);
 	}	
 	
 	var first_element = DISPLAYED_ELEMENT[start_index];
 	var start_sprite = create_decorative_sprite("loop_start", decoration_component["loop_start"].inner_form_image_name, 
 														first_element.object.position.x, first_element.object.position.y);
 	DISPLAYED_ELEMENT.splice(start_index, 0, new VisibleComponent("loop_start", start_sprite));
-	STAGE.addChild(start_sprite);
-																	  
-	var end_element = DISPLAYED_ELEMENT[end_index + 1];
+	STAGE.addChildAt(start_sprite, 1);
+				
+	// Because we've added an element "loop_start"			
+	end_index ++;										  
+	var end_element = DISPLAYED_ELEMENT[end_index];
 	var end_sprite = create_decorative_sprite("loop_end", decoration_component["loop_end"].inner_form_image_name, 
 														end_element.object.position.x, end_element.object.position.y);
 														
 	add_interactive_part("loop_end", decoration_component["loop_end"], end_sprite);
-	DISPLAYED_ELEMENT.splice(end_index + 2, 0, new VisibleComponent("loop_end", end_sprite));
-	STAGE.addChild(end_sprite);
+	DISPLAYED_ELEMENT.splice(end_index + 1, 0, new VisibleComponent("loop_end", end_sprite));
+	end_index ++;
+	STAGE.addChildAt(end_sprite, 1);
 	
 	end_sprite.function_create = create_decorative_sprite("function_create", decoration_component["function_create"].inner_form_image_name, 
 														end_sprite.position.x - 100, end_sprite.position.y, true);
 	init_function_create(end_sprite.function_create, end_sprite);												
 	STAGE.addChild(end_sprite.function_create);
-	return end_sprite;
+	
+	var previous_connector = init_previous_connector(DISPLAYED_ELEMENT[start_index].object.position.x);
+	DISPLAYED_ELEMENT.splice(start_index, 0, new VisibleComponent("switch_block", previous_connector));
+	STAGE.addChild(previous_connector);
+	start_index ++;
+	end_index ++;
+	
+	var next_connector = add_next_button_to_the_right(end_sprite, false);
+	if (end_index + 1 == DISPLAYED_ELEMENT.length) {
+		DISPLAYED_ELEMENT.push(new VisibleComponent("add_block", next_connector));
+	} else {
+		DISPLAYED_ELEMENT.splice(end_index + 1, 0, new VisibleComponent("add_block", next_connector));
+	}
+	STAGE.addChild(next_connector);
+	
+	return {"end_sprite": end_sprite, "start_index": start_index, "end_index": end_index};
 }
 
 function group_elements(initiating, dragged_to) {
@@ -425,9 +448,14 @@ function group_elements(initiating, dragged_to) {
 		end_index = initiating_index;
 	}
 	
-	var end_sprite = convert_to_combines_structure(start_index, end_index);
+	// Including the connectors
+	start_index --;
+	end_index ++;
+	
+	var res = convert_to_combines_structure(start_index, end_index);
+	var end_sprite = res["end_sprite"];
 	recalculate_positions();
-	fill_with_back_ground(start_index + 1, end_index + 2, "loop_bg", decoration_component["loop_bg"].inner_form_image_name);
+	fill_with_back_ground(res["start_index"], res["end_index"], "loop_bg", decoration_component["loop_bg"].inner_form_image_name);
 	
 	var event = new CustomEvent('loop_creation_end', {'detail': end_sprite});
 	document.dispatchEvent(event);
@@ -554,7 +582,7 @@ function open_options_window(data) {
 	if (connector_index != 0) {
 		previous_connector = init_previous_connector(this.position.x);
 		STAGE.addChild(previous_connector);
-		DISPLAYED_ELEMENT.splice(connector_index + 1, previous_connector);
+		DISPLAYED_ELEMENT.splice(connector_index + 1, 0, new VisibleComponent("switch_block", previous_connector));
 	}
 	
 	var options_window = init_options_window(this, previous_connector);
@@ -652,8 +680,6 @@ function init() {
 	var robot_face = PIXI.Sprite.fromImage(decoration_component["robot_face"].image_name);
 	robot_face.position.x = 0;
 	robot_face.position.y = 50;
-	robot_face.interactive = true;
-	robot_face.click = robot_face.tap = open_keyboard;
 	robot_face.not_remove_when_cleared = true;
 	add_display_object(robot_face, "robot_face");
 	
