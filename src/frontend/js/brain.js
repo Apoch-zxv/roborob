@@ -23,7 +23,7 @@ var X_CORRECTION_FACTOR = 5;
 programming_components["go_forward"] = new DisplayElement("images/draw_board/go_forward_block.png", 
                                                           "images/draw_board/forward_icon.png", 
                                                           "images/draw_board/go_forward_block_inside_loop.png", 
-                                                          "go_forward", 59, 
+                                                          "go_forward", 60, 
                                                           new ImagePosition(30, 80), open_calculator);
 programming_components["go_backward"] = new DisplayElement("images/draw_board/go_backward_block.png", 
                                                            "images/draw_board/backward_icon.png", 
@@ -41,8 +41,9 @@ programming_components["turn_right"] = new DisplayElement("images/draw_board/tur
                                                           "turn_right", 55, 
                                                           new ImagePosition(80, 90), open_angle);
                                                           
-decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 157);
+decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
 decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
+decoration_component["switch_block"] = new DecorationElement("images/draw_board/switch_block.png", "images/draw_board/switch_block_inside_loop.png", 0);
 decoration_component["start_code"] = new DecorationElement("images/draw_board/first_add_block.png", "images/draw_board/first_add_block_inside_loop.png", 0);
 decoration_component["robot_face"] = new DecorationElement("images/general/robot_face.png", null, 0);
 
@@ -88,27 +89,27 @@ function display_on_initiator(initiator, display_text) {
 }
 
 
-function init_options_window(next_object) {
+function init_options_window(previous_object, previous_connector) {
 	var options_window = PIXI.Sprite.fromImage(decoration_component["arrows_menu"].image_name);
-	options_window.position.x = next_object.position.x + next_object.width - X_CORRECTION_FACTOR;	options_window.position.y = MAIN_Y_AXIS - decoration_component["arrows_menu"].connector_height_px;
+	options_window.position.x = previous_object.position.x + previous_object.width - X_CORRECTION_FACTOR;	options_window.position.y = MAIN_Y_AXIS - decoration_component["arrows_menu"].connector_height_px;
 	options_window.interactive = true;
 	
 	var x_offset = 50;
 	var y_current_offset = 40;
 	var extra_y = 15;
-	var next_child = create_single_option(next_object, programming_components["go_forward"], x_offset, y_current_offset);
+	var next_child = create_single_option(previous_object, programming_components["go_forward"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
-	next_child = create_single_option(next_object, programming_components["go_backward"], x_offset, y_current_offset);
+	next_child = create_single_option(previous_object, programming_components["go_backward"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
-	next_child = create_single_option(next_object, programming_components["turn_left"], x_offset, y_current_offset);
+	next_child = create_single_option(previous_object, programming_components["turn_left"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
-	next_child = create_single_option(next_object, programming_components["turn_right"], x_offset, y_current_offset);
+	next_child = create_single_option(previous_object, programming_components["turn_right"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
@@ -118,13 +119,14 @@ function init_options_window(next_object) {
 	return options_window;
 }
 
-function create_single_option(initiating_object, component, x_offset, y_offset) {
+function create_single_option(initiating_object, component, x_offset, y_offset, previous_connector) {
 	var single_option = PIXI.Sprite.fromImage(component.options_image_name);
 	single_option.position.x = x_offset;
 	single_option.position.y = y_offset;
 	single_option.interactive = true;
 	single_option.buttonMode = true;
 	single_option.to_add_image = component;
+	single_option.previous_connector = previous_connector;
 	single_option.initiating_object = initiating_object;
 	single_option.click = single_option.tap = add_bigger_image;
 	return single_option;
@@ -140,6 +142,8 @@ function add_next_button_to_the_right(current_object) {
 	
 	start_code.click = start_code.tap = open_options_window;
 	add_stage_object(start_code, "add_block");
+	
+	return start_code;
 }
 
 function add_dragging_events(object) {
@@ -182,6 +186,7 @@ function add_bigger_image(data) {
 	bigger_image.position.y = MAIN_Y_AXIS - component.connector_height_px;
 	bigger_image.interactive = true;
 	bigger_image.buttonMode = true;
+	bigger_image.previous_connector = this.previous_connector;
 	add_dragging_events(bigger_image);
 	
 	bigger_image.name = this.to_add_image.reference_name;
@@ -198,14 +203,17 @@ function add_bigger_image(data) {
 	bigger_image.parameter = text;
 	
 	var initiating_object_index = find_displayed_object_index(this.initiating_object);
-	if (initiating_object_index == DISPLAYED_ELEMENT.length - 1) {
-		add_stage_object(bigger_image, this.to_add_image.reference_name);
-		add_next_button_to_the_right(bigger_image);
-	} else {
-		replace_object(DISPLAYED_ELEMENT[initiating_object_index + 1], 
-			new VisibleComponent(this.to_add_image.reference_name, bigger_image));
-		recalculate_positions();
+	if (initiating_object_index != DISPLAYED_ELEMENT.length - 1) {
+		console.log("Error replacement not supported");
 	}
+	add_stage_object(bigger_image, this.to_add_image.reference_name);
+	bigger_image.next_connector = add_next_button_to_the_right(bigger_image);
+	// TODO: We will add support for replacement later
+	// } else {
+		// replace_object(DISPLAYED_ELEMENT[initiating_object_index + 1], 
+			// new VisibleComponent(this.to_add_image.reference_name, bigger_image));
+		// recalculate_positions();
+	// }
 	remove_from_stage_object(this.parent);
 	
 	var event = new CustomEvent('options_window_selection_clicked', {'detail': this.to_add_image.reference_name});
@@ -456,6 +464,9 @@ function find_close_enough(object, min_dist) {
 		}	
 	}
 	
+	if (min_distance > min_dist) {
+		return null;
+	}
 	return closest_object;
 }
 
@@ -474,8 +485,18 @@ function onDragStart(event)
 	    	x: this.position.x, 
 	    	y: this.position.y
 		};
+		this.previous_original_position = {
+	    	x: this.previous_connector.position.x, 
+	    	y: this.previous_connector.position.y
+		};
+		this.next_original_position = {
+	    	x: this.next_connector.position.x, 
+	    	y: this.next_connector.position.y
+		};
 		this.previous_x = this.data.global.x;
 		this.alpha = 0.5;
+		this.previous_connector.alpha = 0.5;
+		this.next_connector.alpha = 0.5;
 		this.dragging = true;
 	}
 }
@@ -484,6 +505,8 @@ function onDragEnd()
 {
 	if (this.dragging) {
 	    this.alpha = 1;
+	    this.previous_connector.alpha = 1;
+		this.next_connector.alpha = 1;
 	
 	    this.dragging = false;
 	
@@ -492,7 +515,9 @@ function onDragEnd()
 	    var closest_object = find_close_enough(this, MIN_GROUP_TOGETHER_DISTANCE); 
 	    
 	    if (closest_object == null) {
-			move_object(this, this.original_position, 100);
+			move_object(this, this.original_position, 300);
+			move_object(this.previous_connector, this.previous_original_position, 300);
+			move_object(this.next_connector, this.next_original_position, 300);
 	    } else {
 	    	this.position = this.original_position;
 	    	group_elements(this, closest_object.object);
@@ -506,14 +531,33 @@ function onDragMove()
 {
     if (this.dragging)
     {
-        this.position.x = this.position.x + this.data.global.x - this.previous_x;
+    	var diff = this.data.global.x - this.previous_x;
+        this.position.x = this.position.x + diff;
+        this.target.previous_connector.position.x = this.target.previous_connector.position.x + diff;
+        this.target.next_connector.position.x = this.target.next_connector.position.x + diff;
         this.previous_x = this.data.global.x;
     }
+}
+
+function init_previous_connector(x) {
+	var switch_block = PIXI.Sprite.fromImage(decoration_component["switch_block"].image_name);
+	switch_block.position.x = x - X_CORRECTION_FACTOR;
+	switch_block.position.y = MAIN_Y_AXIS - decoration_component["switch_block"].connector_height_px;
+	switch_block.interactive = true;
+	return switch_block;
 }
     
 function open_options_window(data) {
 	global_click_event();
-	var options_window = init_options_window(this);
+	var connector_index = find_displayed_object_index(this);
+	var previous_connector = this;
+	if (connector_index != 0) {
+		previous_connector = init_previous_connector(this.position.x);
+		STAGE.addChild(previous_connector);
+		DISPLAYED_ELEMENT.splice(connector_index + 1, previous_connector);
+	}
+	
+	var options_window = init_options_window(this, previous_connector);
 	options_window.remove_on_bg_click = true;
 	options_window.name = "options_window";
 	STAGE.addChild(options_window);

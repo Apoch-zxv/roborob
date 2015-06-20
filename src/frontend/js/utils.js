@@ -38,7 +38,7 @@ function remove_gray_shadow() {
 
 function move_object(object, dest, speed) {
 	createjs.Tween.get(object)
-                 .to({x:dest.x, y:dest.y}, 600);
+                 .to({x:dest.x, y:dest.y}, speed);
 }
 
 function fade_out(object, wait_time, after_fade, fade_speed) {
