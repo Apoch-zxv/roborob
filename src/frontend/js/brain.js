@@ -590,6 +590,7 @@ function init() {
     var bg = PIXI.Sprite.fromImage("images/general/BG.png");
     bg.interactive = true;
     bg.click = bg.tab = bg_clicked;
+    bg.not_remove_when_cleared = true;
 	STAGE.addChild(bg);
 	
 	var start_code = PIXI.Sprite.fromImage(decoration_component["start_code"].image_name);
@@ -598,6 +599,7 @@ function init() {
 	
 	start_code.interactive = true;
 	start_code.buttonMode = true;
+	start_code.not_remove_when_cleared = true;
 	
 	start_code.click = start_code.tap = open_options_window;
 	add_stage_object(start_code, "start_code");
@@ -607,13 +609,15 @@ function init() {
 	robot_face.position.y = 50;
 	robot_face.interactive = true;
 	robot_face.click = robot_face.tap = open_keyboard;
+	robot_face.not_remove_when_cleared = true;
 	add_display_object(robot_face, "robot_face");
 	
 	var execute_code = PIXI.Sprite.fromImage("images/general/run_button_status_on.png");
 	execute_code.position.x = 1100;
 	execute_code.position.y = 600;
 	execute_code.interactive = true;
-	execute_code.buttonMode = true;
+	execute_code.buttonMode = true;
+	execute_code.not_remove_when_cleared = true;
 	execute_code.click = execute_code.tap = submit_code;
 	add_display_object(execute_code, "execute_code");
 	

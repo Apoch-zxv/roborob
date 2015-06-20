@@ -87,6 +87,19 @@ function distance(a, b) {
 	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
 
+function clear_board() {
+	var to_remove = [];
+	for (var i = 0; i < STAGE.children.length; i ++) {
+		if (STAGE.children[i].not_remove_when_cleared != true) {
+			to_remove.push(STAGE.children[i]);
+		}
+	}
+	
+	for (var i = 0; i < to_remove.length; i++) {
+		STAGE.removeChild(to_remove[i]);
+	}
+}
+
 function bg_clicked(data) {
 	var to_remove = [];
 	var remove_names = [];

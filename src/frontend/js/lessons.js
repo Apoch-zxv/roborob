@@ -36,6 +36,7 @@ function select_lesson(lesson) {
 	}
 	
 	if (CURRENT_SELECTED_LESSON != lesson) {
+		clear_board();
 		if (CURRENT_SELECTED_LESSON != null) {
 			remove_lesson_listener(CURRENT_SELECTED_LESSON);
 		}
@@ -260,6 +261,7 @@ function add_lesson_icons() {
 		lesson_select.interactive = true;
 		lesson_select.buttonMode = true;
 		lesson_select.lesson = lesson;
+		lesson_select.not_remove_when_cleared = true;
 		lesson.object = lesson_select;
 		lesson_select.click = lesson_select.tap = select_lesson_click;
 		add_display_object(lesson_select, "lesson_select");
