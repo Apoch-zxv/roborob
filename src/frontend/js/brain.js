@@ -20,55 +20,55 @@ var MIN_GROUP_TOGETHER_DISTANCE = 30;
 var MAIN_Y_AXIS = 400;
 var X_CORRECTION_FACTOR = 5;
 
-programming_components["go_forward"] = new DisplayElement("images/go_forward_block.png", 
-                                                          "images/forward_icon.png", 
-                                                          "images/go_forward_block_inside_loop.png", 
+programming_components["go_forward"] = new DisplayElement("images/draw_board/go_forward_block.png", 
+                                                          "images/draw_board/forward_icon.png", 
+                                                          "images/draw_board/go_forward_block_inside_loop.png", 
                                                           "go_forward", 59, 
                                                           new ImagePosition(30, 80), open_calculator);
-programming_components["go_backward"] = new DisplayElement("images/go_forward_block.png", 
-                                                           "images/backward_icon.png", 
-                                                           "images/go_forward_block_inside_loop.png", 
+programming_components["go_backward"] = new DisplayElement("images/draw_board/go_backward_block.png", 
+                                                           "images/draw_board/backward_icon.png", 
+                                                           "images/draw_board/go_backward_block_inside_loop.png", 
                                                            "go_backward", 59, 
                                                            new ImagePosition(30, 80), open_calculator);
-programming_components["turn_left"] = new DisplayElement("images/turn_right_block.png", 
-                                                         "images/turn_left_icon.png", 
-                                                         "images/go_forward_block_inside_loop.png", 
+programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_right_block.png", 
+                                                         "images/draw_board/turn_left_icon.png", 
+                                                         "images/draw_board/go_forward_block_inside_loop.png", 
                                                          "turn_left", 55, 
                                                          new ImagePosition(80, 90), open_angle);
-programming_components["turn_right"] = new DisplayElement("images/turn_right_block.png", 
-                                                          "images/turn_right_icon.png", 
-                                                          "images/turn_right_block_inside_loop.png", 
+programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_left_block.png", 
+                                                          "images/draw_board/turn_left_icon.png", 
+                                                          "images/draw_board/turn_left_block_inside_loop.png", 
                                                           "turn_right", 55, 
                                                           new ImagePosition(80, 90), open_angle);
                                                           
-decoration_component["arrows_menu"] = new DecorationElement("images/arrows_menu.png", null, 157);
-decoration_component["add_block"] = new DecorationElement("images/add_block.png", "images/add_block_inside_loop.png", 0);
-decoration_component["start_code"] = new DecorationElement("images/start_code.png", "images/first_add_block_inside_loop.png", 0);
-decoration_component["robot_face"] = new DecorationElement("images/robot_face.png", null, 0);
+decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 157);
+decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
+decoration_component["start_code"] = new DecorationElement("images/draw_board/first_add_block.png", "images/draw_board/first_add_block_inside_loop.png", 0);
+decoration_component["robot_face"] = new DecorationElement("images/general/robot_face.png", null, 0);
 
-decoration_component["function_create"] = new DecorationElement(null, "images/make_function_button.png", 89);
-decoration_component["function_block"] = new DecorationElement("images/function_block.png", null, 138);
-decoration_component["loop_start"] = new DecorationElement(null, "images/loop_block_left_side.png", 89);
-decoration_component["loop_end"] = new DecorationElement(null, "images/loop_block_rightt_side.png", 152, new ImagePosition(85, 63, 50, 50), open_calculator);
-decoration_component["loop_bg"] = new DecorationElement(null, "images/loop_block_middle.png", 89);
-decoration_component["window_field"] = new DecorationElement("images/interaction/calculator_window_field.png", null, 0);
+decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 89);
+decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 138);
+decoration_component["loop_start"] = new DecorationElement(null, "images/draw_board/loop_block_left_side.png", 89);
+decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 152, new ImagePosition(85, 63, 50, 50), open_calculator);
+decoration_component["loop_bg"] = new DecorationElement(null, "images/draw_board/loop_block_middle.png", 89);
 
-decoration_component["keyboard_field"] = new DecorationElement("images/interaction/keyboard_window_field.png", null, 0);
+decoration_component["keyboard_field"] = new DecorationElement("images/keyboard/keyboard_field.png", null, 0);
 
-decoration_component["angle_bg"] = new DecorationElement("images/interaction/angels_window.png", null, 0);
-decoration_component["angle_circle"] = new DecorationElement("images/interaction/unchosen_pink_angles_circle.png", null, 0);
-decoration_component["angle_circle_selected"] = new DecorationElement("images/interaction/chosen_yellow_angles_circle.png", null, 0);
-decoration_component["angle_circle_transperent"] = new DecorationElement("images/interaction/circle_transperent.png", null, 0);
-decoration_component["angle_needle"] = new DecorationElement("images/interaction/needle_angles.png", null, 0);
+decoration_component["angle_bg"] = new DecorationElement("images/angle/angels_window.png", null, 0);
+decoration_component["angle_circle"] = new DecorationElement("images/angle/unchosen_red_angles_circle.png", null, 0);
+decoration_component["angle_circle_selected"] = new DecorationElement("images/angle/chosen_yellow_angles_circle.png", null, 0);
+decoration_component["angle_circle_transperent"] = new DecorationElement("images/angle/circle_transperent.png", null, 0);
+decoration_component["angle_needle"] = new DecorationElement("images/angle/needle_angles.png", null, 0);
 
-decoration_component["calculator_bg"] = new DecorationElement("images/interaction/calculator_window_BG_pink.png", null, 0);
-decoration_component["calculator_window_--_button"] = new DecorationElement("images/interaction/calculator_window_--_button.png", null, 0);
-decoration_component["calculator_window_0_button"] = new DecorationElement("images/interaction/calculator_window_0_button.png", null, 0);
-decoration_component["calculator_window_delete_button"] = new DecorationElement("images/interaction/calculator_window_delete_button.png", null, 0);
-decoration_component["calculator_window_ok_button"] = new DecorationElement("images/interaction/calculator_window_ok_button.png", null, 0);
+decoration_component["calculator_bg"] = new DecorationElement("images/calculator/calculator.png", null, 0);
+decoration_component["calculator_field"] = new DecorationElement("images/calculator/calculator_field.png", null, 0);
+decoration_component["calculator_window_--_button"] = new DecorationElement("images/calculator/calculator_window_C_button.png", null, 0);
+decoration_component["calculator_window_0_button"] = new DecorationElement("images/calculator/calculator_window_0_button.png", null, 0);
+decoration_component["calculator_window_delete_button"] = new DecorationElement("images/calculator/calculator_window_delete_button.png", null, 0);
+decoration_component["calculator_window_ok_button"] = new DecorationElement("images/calculator/calculator_window_ok_button.png", null, 0);
 
 for (var i = 0; i <= 9; i++) {
-	decoration_component["calculator_digit_{0}".format(i)] = new DecorationElement("images/interaction/calculator_window_{0}_button.png".format(i), null, 0);
+	decoration_component["calculator_digit_{0}".format(i)] = new DecorationElement("images/calculator/calculator_window_{0}_button.png".format(i), null, 0);
 }
 
 function animate() {
@@ -76,7 +76,6 @@ function animate() {
  
         // render the STAGE   
     RENDERER.render(STAGE);
-    TWEEN.update();
     
 }
 
@@ -543,30 +542,9 @@ function replace_object(old_object, new_object) {
 	STAGE.addChild(new_object.object);
 }
 
-function bg_clicked(data) {
-	var to_remove = [];
-	var remove_names = [];
-	var array_length = STAGE.children.length;
-	for (var i = 0; i < array_length; i++) {
-		if (STAGE.children[i].remove_on_bg_click == true) {
-			to_remove.push(STAGE.children[i]);
-		}
-	}
-	
-	for (var i = 0; i < to_remove.length; i++) {
-		remove_from_stage_object(to_remove[i]);
-		if (to_remove[i].name != null) {
-			remove_names.push(to_remove[i].name);
-		}
-	}
-	
-	var event = new CustomEvent('back_ground_click', {'detail': remove_names});
-	document.dispatchEvent(event);
-}
-
 function switch_to_waiting(button) {
 	var original_texture = button.texture;
-	button.texture = PIXI.Texture.fromImage("images/run_button_status_loading.png");
+	button.texture = PIXI.Texture.fromImage("images/general/run_button_loading_back_ground.png");
 	setTimeout(function(){
     	button.texture = original_texture;
     	var event = new CustomEvent('code_submition_done');
@@ -609,7 +587,7 @@ function init() {
     STAGE.interactive = true;
     
     // create a texture from an image path
-    var bg = PIXI.Sprite.fromImage("images/BG.png");
+    var bg = PIXI.Sprite.fromImage("images/general/BG.png");
     bg.interactive = true;
     bg.click = bg.tab = bg_clicked;
 	STAGE.addChild(bg);
@@ -631,7 +609,7 @@ function init() {
 	robot_face.click = robot_face.tap = open_keyboard;
 	add_display_object(robot_face, "robot_face");
 	
-	var execute_code = PIXI.Sprite.fromImage("images/run_button_status_on.png");
+	var execute_code = PIXI.Sprite.fromImage("images/general/run_button_status_on.png");
 	execute_code.position.x = 1100;
 	execute_code.position.y = 600;
 	execute_code.interactive = true;
@@ -649,15 +627,24 @@ function init() {
     // add the RENDERER view element to the DOM
     document.body.appendChild(RENDERER.view);
     
-    var assetsToLoad = ["images/go_forward_block.png", "images/backward_icon.png", 
-                        "images/forward_icon.png", "images/turn_left_icon.png", 
-                        "images/turn_right_block.png", "images/arrows_menu.png", 
-                        "images/add_block.png"];
+    // var assetsToLoad = ["images/draw_board/go_forward_block.png", "images/draw_board/backward_icon.png", 
+                        // "images/draw_board/forward_icon.png", "images/draw_board/turn_left_icon.png", 
+                        // "images/draw_board/turn_right_block.png", "images/draw_board/arrows_menu.png", 
+                        // "images/draw_board/add_block.png"];
+    var assetsToLoad = [];
                      
     for (var key in programming_components) {
     	if (programming_components[key].inner_form_image_name != null) {
+    		if (assetsToLoad.indexOf(programming_components[key].big_image_name) == -1) {
+	    		assetsToLoad.push(programming_components[key].big_image_name);
+	    	}
+    		
 	    	if (assetsToLoad.indexOf(programming_components[key].inner_form_image_name) == -1) {
 	    		assetsToLoad.push(programming_components[key].inner_form_image_name);
+	    	}
+	    	
+	    	if (assetsToLoad.indexOf(programming_components[key].options_image_name) == -1) {
+	    		assetsToLoad.push(programming_components[key].options_image_name);
 	    	}
     	}
     }
@@ -682,13 +669,12 @@ function init() {
 		console.log(assetsToLoad[i]);
 	    loader.add(assetsToLoad[i], assetsToLoad[i]);
 	}
+	
+	init_choose_screen();
+	init_splash_screen();
+	
 	loader.load();
  
     requestAnimationFrame( animate );
 }
 
-var GRAY_BG = PIXI.Sprite.fromImage("images/gray_bg.png");
-GRAY_BG.interactive = true;
-GRAY_BG.alpha = 0.5;
-GRAY_BG.remove_on_bg_click = true;
-GRAY_BG.click = GRAY_BG.tab = bg_clicked;

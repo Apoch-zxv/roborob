@@ -37,10 +37,15 @@ function remove_gray_shadow() {
 }
 
 function move_object(object, dest) {
-	new TWEEN.Tween(object)
-                 .to({x:dest.x, y:dest.y}, 600)
-                 .easing(TWEEN.Easing.Linear.None)
-            .start();
+	createjs.Tween.get(object)
+                 .to({x:dest.x, y:dest.y}, 600);
+}
+
+function fade_out(object, wait_time, after_fade, fade_speed) {
+	createjs.Tween.get(object)
+	             .wait(wait_time)
+                 .to({alpha:0}, fade_speed)
+                 .call(after_fade);
 }
 
 function remove_on_any_click() {
@@ -81,3 +86,30 @@ function send_to_server(data, url) {
 function distance(a, b) {
 	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
+
+function bg_clicked(data) {
+	var to_remove = [];
+	var remove_names = [];
+	var array_length = STAGE.children.length;
+	for (var i = 0; i < array_length; i++) {
+		if (STAGE.children[i].remove_on_bg_click == true) {
+			to_remove.push(STAGE.children[i]);
+		}
+	}
+	
+	for (var i = 0; i < to_remove.length; i++) {
+		remove_from_stage_object(to_remove[i]);
+		if (to_remove[i].name != null) {
+			remove_names.push(to_remove[i].name);
+		}
+	}
+	
+	var event = new CustomEvent('back_ground_click', {'detail': remove_names});
+	document.dispatchEvent(event);
+}
+
+var GRAY_BG = PIXI.Sprite.fromImage("images/general/gray_bg.png");
+GRAY_BG.interactive = true;
+GRAY_BG.alpha = 0.5;
+GRAY_BG.remove_on_bg_click = true;
+GRAY_BG.click = GRAY_BG.tab = bg_clicked;

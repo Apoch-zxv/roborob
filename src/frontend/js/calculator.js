@@ -51,7 +51,7 @@ function open_calculator(initiator) {
 	gray_shadow();
 	
 	var calc_window = PIXI.Sprite.fromImage(decoration_component["calculator_bg"].image_name);
-	var calc_field = PIXI.Sprite.fromImage(decoration_component["window_field"].image_name);
+	var calc_field = PIXI.Sprite.fromImage(decoration_component["calculator_field"].image_name);
 	
 	var x_offset = (calc_window.width - calc_field.width) / 2;
 	var y_offset = 90, y_space = 25, x_space = 20;

@@ -212,7 +212,7 @@ function open_angle(initiator) {
 	circle.move_needle = second_needle;
 	needle_rectangle.addChild(second_needle);
 	
-	var middle_circle = PIXI.Sprite.fromImage("images/interaction/midddle_angles_circle.png");
+	var middle_circle = PIXI.Sprite.fromImage("images/angle/midddle_angles_circle.png");
 	middle_circle.position.x = circle.width / 2;
 	middle_circle.position.y = circle.height / 2;
 	middle_circle.interactive = true;
@@ -228,7 +228,7 @@ function open_angle(initiator) {
 	circle.number = number;
 	angle.addChild(number);
 	
-	var submit_angle = PIXI.Sprite.fromImage("images/interaction/angels_window_ok_button.png");
+	var submit_angle = PIXI.Sprite.fromImage("images/angle/angels_window_ok_button.png");
 	submit_angle.position.x = number.position.x + number.width + 20;
 	submit_angle.position.y = number.position.y - number.height - 13;
 	submit_angle.interactive = true;

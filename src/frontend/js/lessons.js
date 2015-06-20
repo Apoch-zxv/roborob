@@ -64,7 +64,7 @@ function reposition_all_lessons() {
 
 function square_lesson(data) {
 	gray_shadow();
-	var level1_window = PIXI.Sprite.fromImage("images/level_1_window.png");
+	var level1_window = PIXI.Sprite.fromImage("images/lessons/level_1_window.png");
 	level1_window.position.x = 275;
 	level1_window.position.y = 100;
 	level1_window.interactive = true;
@@ -80,7 +80,7 @@ function square_lesson_bg_click(data) {
 		var removed_name = removed_names[i];
 		switch (removed_name) {
 			case "level1_window":
-				var first_block = PIXI.Sprite.fromImage("images/add_first_block_small_window.png");
+				var first_block = PIXI.Sprite.fromImage("images/lessons/add_first_block_small_window.png");
 				first_block.position.x = 45;
 				first_block.position.y = 470;
 				first_block.interactive = true;
@@ -90,7 +90,7 @@ function square_lesson_bg_click(data) {
 				STAGE.addChild(first_block);
 				break;
 			case "well_done_its_working_window":
-				var first_block = PIXI.Sprite.fromImage("images/use_function_small_window.png");
+				var first_block = PIXI.Sprite.fromImage("images/lessons/use_function_small_window.png");
 				first_block.position.x = 65;
 				first_block.position.y = 130;
 				first_block.interactive = true;
@@ -116,7 +116,7 @@ function count_options_selector() {
 function square_lesson_options_window(data) {
 	var options_selector_count = count_options_selector();
 	if (options_selector_count == 1) {
-		var touch_the_forward_block = PIXI.Sprite.fromImage("images/touch_the_forward_block_small_window.png");
+		var touch_the_forward_block = PIXI.Sprite.fromImage("images/lessons/touch_the_forward_block_small_window.png");
 		touch_the_forward_block.position.x = 275;
 		touch_the_forward_block.position.y = 200;
 		touch_the_forward_block.interactive = true;
@@ -125,7 +125,7 @@ function square_lesson_options_window(data) {
 		touch_the_forward_block.name = "touch_the_forward_block_small_window";
 		STAGE.addChild(touch_the_forward_block);
 	} else {
-		var touch_the_forward_block = PIXI.Sprite.fromImage("images/touch_the_turn_block_small_window.png");
+		var touch_the_forward_block = PIXI.Sprite.fromImage("images/lessons/touch_the_turn_block_small_window.png");
 		touch_the_forward_block.position.x = 475;
 		touch_the_forward_block.position.y = 400;
 		touch_the_forward_block.interactive = true;
@@ -145,7 +145,7 @@ function square_lesson_calculator_closed(data) {
 	var initiator_name = data.detail;
 	switch (initiator_name) {
 		case "loop_end":
-			var add_next_block = PIXI.Sprite.fromImage("images/hit-_run_small_window.png");
+			var add_next_block = PIXI.Sprite.fromImage("images/lessons/hit-_run_small_window.png");
 			add_next_block.position.x = 500;
 			add_next_block.position.y = 600;
 			add_next_block.interactive = true;
@@ -155,7 +155,7 @@ function square_lesson_calculator_closed(data) {
 			STAGE.addChild(add_next_block);
 			break;
 		case "go_forward":
-			var add_next_block = PIXI.Sprite.fromImage("images/add_next_block_small_window.png");
+			var add_next_block = PIXI.Sprite.fromImage("images/lessons/add_next_block_small_window.png");
 			add_next_block.position.x = 255;
 			add_next_block.position.y = 450;
 			add_next_block.interactive = true;
@@ -169,7 +169,7 @@ function square_lesson_calculator_closed(data) {
 }
 
 function square_lesson_angle_closed(data) {
-	var add_next_block = PIXI.Sprite.fromImage("images/drag_thist_block_small_window.png");
+	var add_next_block = PIXI.Sprite.fromImage("images/lessons/drag_thist_block_small_window.png");
 	add_next_block.position.x = 295;
 	add_next_block.position.y = 550;
 	add_next_block.interactive = true;
@@ -181,7 +181,7 @@ function square_lesson_angle_closed(data) {
 
 
 function square_lesson_loop_created(data) {
-	var add_next_block = PIXI.Sprite.fromImage("images/how_many_lines_small_window.png");
+	var add_next_block = PIXI.Sprite.fromImage("images/lessons/how_many_lines_small_window.png");
 	add_next_block.position.x = 760;
 	add_next_block.position.y = 180;
 	add_next_block.interactive = true;
@@ -193,7 +193,7 @@ function square_lesson_loop_created(data) {
 
 function square_lesson_code_submition_done(data) {
 	gray_shadow();
-	var add_next_block = PIXI.Sprite.fromImage("images/well_done_its_working_window.png");
+	var add_next_block = PIXI.Sprite.fromImage("images/lessons/well_done_its_working_window.png");
 	add_next_block.position.x = 300;
 	add_next_block.position.y = 250;
 	add_next_block.interactive = true;
@@ -210,7 +210,7 @@ function square_lesson_keyboard_opened(data) {
 
 function square_lesson_keyboard_closed(data) {
 	gray_shadow();
-	var add_next_block = PIXI.Sprite.fromImage("images/end_level_1_window.png");
+	var add_next_block = PIXI.Sprite.fromImage("images/lessons/end_level_1_window.png");
 	add_next_block.position.x = 275;
 	add_next_block.position.y = 100;
 	add_next_block.interactive = true;
@@ -220,11 +220,10 @@ function square_lesson_keyboard_closed(data) {
 	STAGE.addChild(add_next_block);
 }
 
-decoration_component["lesson_not_done"] = new DecorationElement("images/undone_lesson_icon.png", null, 0);
-decoration_component["lesson_done"] = new DecorationElement("images/done_lesson_icon.png", null, 0);
+decoration_component["lesson_not_done"] = new DecorationElement("images/lessons/undone_lesson_icon.png", null, 0);
 
 for (var i = 1; i <= 10; i++) {
-	decoration_component["lesson_{0}".format(i)] = new DecorationElement("images/{0}_lesson_icon.png".format(i), null, 0);
+	decoration_component["lesson_{0}".format(i)] = new DecorationElement("images/lessons/{0}_lesson_icon.png".format(i), null, 0);
 }
 
 var CURRENT_SELECTED_LESSON = null;

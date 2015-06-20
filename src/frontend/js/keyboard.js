@@ -63,7 +63,7 @@ function add_line (parent_obj, line, x, y) {
 	x_dist = 61 + dist;
 	curr_x = x;
 	for (var i = line.length - 1; i >= 0; i --) {
-		var button = PIXI.Sprite.fromImage("images/keyboard_{0}_button.png".format(line[i]));
+		var button = PIXI.Sprite.fromImage("images/keyboard/keyboard_{0}_button.png".format(line[i]));
 		button.anchor.set(1);
 		button.interactive = true;
 		button.position.y = y;
@@ -93,7 +93,7 @@ function open_keyboard(initiator) {
 	third_line = ["shift", "z", "x", "c", "v", "b", "n", "m", "comma", "Period", "shift"];
 	fourth_line = ["123", "slash", "space", "ok"];
 	
-	var keyboard_bg = PIXI.Sprite.fromImage("images/interaction/keyboard_window_BG.png");
+	var keyboard_bg = PIXI.Sprite.fromImage("images/keyboard//keyboard_window_BG.png");
 	keyboard_bg.position.x = 100;
 	keyboard_bg.position.y = 150;
 	keyboard_bg.interactive = true;
