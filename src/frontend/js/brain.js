@@ -49,7 +49,7 @@ decoration_component["start_code"] = new DecorationElement("images/draw_board/fi
 decoration_component["robot_face"] = new DecorationElement("images/general/robot_face.png", null, 0);
 
 decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 93);
-decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 138);
+decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 140);
 decoration_component["loop_start"] = new DecorationElement(null, "images/draw_board/loop_block_left_side.png", 89);
 decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 165, new ImagePosition(85, 63, 50, 50), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/draw_board/loop_block_middle.png", 89);
