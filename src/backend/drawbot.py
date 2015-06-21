@@ -8,7 +8,10 @@ RIGHT_FORWARD = 13
 LEFT_BACKWARD = 11
 RIGHT_BACKWARD = 15
 
-ALL = [LEFT_FORWARD, RIGHT_FORWARD, LEFT_BACKWARD, RIGHT_BACKWARD]
+LEFT_LED = 16
+RIGHT_LED = 18
+
+ALL = [LEFT_FORWARD, RIGHT_FORWARD, LEFT_BACKWARD, RIGHT_BACKWARD, LEFT_LED, RIGHT_LED]
 
 
 def init():
@@ -58,4 +61,5 @@ def degree_to_ts(length):
 
 def interface_exposure():
     return {"go_forward": Operation(forward, length_to_ts), "go_backward": Operation(backward, length_to_ts),
-            "turn_left": Operation(turn_left, degree_to_ts), "turn_right": Operation(turn_right, degree_to_ts)}
+            "turn_left": Operation(turn_left, degree_to_ts), "turn_right": Operation(turn_right, degree_to_ts),
+            "first_run": Operation(None, None)}

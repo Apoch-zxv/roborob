@@ -28,6 +28,8 @@ def turn_left(ts):
     time.sleep(ts)
     print "turn_left"
 
+def first_run():
+    print "First run"
 
 def length_to_ts(length):
     return 0.1
@@ -39,4 +41,5 @@ def degree_to_ts(length):
 
 def interface_exposure():
     return {"go_forward": Operation(forward, length_to_ts), "go_backward": Operation(backward, length_to_ts),
-            "turn_left": Operation(turn_left, degree_to_ts), "turn_right": Operation(turn_right, degree_to_ts)}
+            "turn_left": Operation(turn_left, degree_to_ts), "turn_right": Operation(turn_right, degree_to_ts),
+            "first_run": Operation(first_run, None)}

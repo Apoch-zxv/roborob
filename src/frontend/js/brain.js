@@ -634,12 +634,12 @@ function extract_code(data, start_index, end_index) {
 		if (curr_component.name == "loop_start") {
 			var inner_loop = [];
 			inner_loop.parent = curr_code;
-			curr_code.push(inner_loop);
+			curr_code.push({"name": "loop", "content": inner_loop, "param": 3});
 			curr_code = inner_loop;
 		} else if (curr_component.name == "loop_end") {
 			curr_code = curr_code.parent;
 		} else if (is_programmable_component(curr_component.name)) {
-			curr_code.push(curr_component.name);		
+			curr_code.push({"name": curr_component.name, "param": curr_component.object.parameter.text});		
 		}
 	}
 	
@@ -653,6 +653,14 @@ function submit_code(data) {
 	send_to_server(code, "/api/execute_code");
 	
 	switch_to_waiting(data.target);
+}
+
+function send_keep_alive_request() {
+	send_to_server("hi", "/api/keep_alive");
+}
+
+function start_keep_alive() {
+	setInterval(send_keep_alive_request, 2000);
 }
 
 function init() {
@@ -754,6 +762,8 @@ function init() {
 	loader.load(function () {
     	console.log('Finished loading');
 	});
+	
+	start_keep_alive();
 	
 	// init_choose_screen();
 	// init_splash_screen();
