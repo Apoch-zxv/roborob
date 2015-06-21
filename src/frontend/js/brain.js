@@ -92,7 +92,8 @@ function display_on_initiator(initiator, display_text) {
 
 function init_options_window(previous_object, previous_connector) {
 	var options_window = PIXI.Sprite.fromImage(decoration_component["arrows_menu"].image_name);
-	options_window.position.x = previous_object.position.x + previous_object.width - X_CORRECTION_FACTOR;	options_window.position.y = MAIN_Y_AXIS - decoration_component["arrows_menu"].connector_height_px;
+	options_window.position.x = previous_object.position.x + previous_object.width - X_CORRECTION_FACTOR;
+	options_window.position.y = MAIN_Y_AXIS - decoration_component["arrows_menu"].connector_height_px;
 	options_window.interactive = true;
 	
 	var x_offset = 62;
@@ -135,7 +136,7 @@ function create_single_option(initiating_object, component, x_offset, y_offset, 
 
 function add_next_button_to_the_right(current_object, is_add_to_stage_param) {
 	var is_add_to_stage = (typeof is_add_to_stage_param === 'undefined') ? true : is_add_to_stage_param;
-	var start_code = PIXI.Sprite.fromImage(decoration_component["add_block"].image_name);
+	var start_code = create_pressable_object(decoration_component["add_block"].image_name);
 	start_code.position.x = current_object.position.x + current_object.width - X_CORRECTION_FACTOR;
 	start_code.position.y = MAIN_Y_AXIS - decoration_component["add_block"].connector_height_px;
 	
@@ -259,8 +260,13 @@ function replace_to_inner_texture(object) {
 	object.object.texture = inner_texture;
 }
 
-function create_decorative_sprite(reference_name, image_name, x, y, force_y) {
-	var inner_image = PIXI.Sprite.fromImage(image_name);
+function create_decorative_sprite(reference_name, image_name, x, y, force_y, is_pressable) {
+	var inner_image = null;
+	if (is_pressable) {
+		inner_image = create_pressable_object(image_name);
+	} else {
+		inner_image = PIXI.Sprite.fromImage(image_name);
+	}
 	inner_image.position.x = x;
 	inner_image.position.y = MAIN_Y_AXIS - decoration_component[reference_name].connector_height_px;
 	if (force_y) {
@@ -415,8 +421,9 @@ function convert_to_combines_structure(start_index, end_index) {
 	STAGE.addChildAt(end_sprite, 1);
 	
 	end_sprite.function_create = create_decorative_sprite("function_create", decoration_component["function_create"].inner_form_image_name, 
-														end_sprite.position.x - 100, end_sprite.position.y, true);
-	init_function_create(end_sprite.function_create, end_sprite);												
+														end_sprite.position.x - 100, end_sprite.position.y, true, true);
+	init_function_create(end_sprite.function_create, end_sprite);												
+
 	STAGE.addChild(end_sprite.function_create);
 	
 	var previous_connector = init_previous_connector(DISPLAYED_ELEMENT[start_index].object.position.x);
@@ -655,6 +662,18 @@ function submit_code(data) {
 	switch_to_waiting(data.target);
 }
 
+function add_start_code() {
+	//var start_code = PIXI.Sprite.fromImage(decoration_component["start_code"].image_name);
+	var start_code = create_pressable_object(decoration_component["start_code"].image_name);
+	start_code.position.x = 40;
+	start_code.position.y = MAIN_Y_AXIS + decoration_component["start_code"].connector_height_px;
+
+	start_code.interactive = true;
+	start_code.buttonMode = true;
+
+	start_code.click = start_code.tap = open_options_window;
+	add_stage_object(start_code, "start_code");
+}
 function init() {
 	// create an new instance of a pixi STAGE
     STAGE.interactive = true;
@@ -665,18 +684,9 @@ function init() {
     bg.click = bg.tab = bg_clicked;
     bg.not_remove_when_cleared = true;
 	STAGE.addChild(bg);
-	
-	var start_code = PIXI.Sprite.fromImage(decoration_component["start_code"].image_name);
-	start_code.position.x = 40;
-	start_code.position.y = MAIN_Y_AXIS + decoration_component["start_code"].connector_height_px;
-	
-	start_code.interactive = true;
-	start_code.buttonMode = true;
-	start_code.not_remove_when_cleared = true;
-	
-	start_code.click = start_code.tap = open_options_window;
-	add_stage_object(start_code, "start_code");
-	
+
+	add_start_code();
+
 	var robot_face = PIXI.Sprite.fromImage(decoration_component["robot_face"].image_name);
 	robot_face.position.x = 94;
 	robot_face.position.y = 39;
@@ -694,7 +704,8 @@ function init() {
 	execute_code.position.y = 594;
 	execute_code.interactive = true;
 	execute_code.buttonMode = true;
-	execute_code.not_remove_when_cleared = true;
+	execute_code.not_remove_when_cleared = true;
+
 	execute_code.click = execute_code.tap = submit_code;
 	add_display_object(execute_code, "execute_code");
 	
@@ -755,8 +766,8 @@ function init() {
     	console.log('Finished loading');
 	});
 	
-	// init_choose_screen();
-	// init_splash_screen();
+	//init_choose_screen();
+	//init_splash_screen();
 	
     requestAnimationFrame( animate );
 }
