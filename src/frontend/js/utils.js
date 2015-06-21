@@ -99,7 +99,9 @@ function clear_board() {
 		STAGE.removeChild(to_remove[i]);
 	}
 	
-	DISPLAYED_ELEMENT.splice(1, DISPLAYED_ELEMENT.length - 2);
+	DISPLAYED_ELEMENT = []
+
+	add_start_code();
 }
 
 function bg_clicked(data) {
@@ -121,6 +123,34 @@ function bg_clicked(data) {
 	
 	var event = new CustomEvent('back_ground_click', {'detail': remove_names});
 	document.dispatchEvent(event);
+}
+
+function object_press(event) {
+	event.target.texture = event.target.pressed_texture;
+}
+
+function object_release(event) {
+	event.target.texture = event.target.usual_texture;
+}
+
+function get_pressed_file_name(file_name) {
+	return file_name.substring(0, file_name.length - 4) + "_pressed.png";
+}
+
+function create_pressable_object(image_name) {
+	var object = PIXI.Sprite.fromImage(image_name);
+	var pressed_texture = PIXI.Texture.fromImage(get_pressed_file_name(image_name));
+	object.pressed_texture = pressed_texture;
+	object.usual_texture = object.texture;
+	object// events for drag start
+		.on('mousedown', object_press)
+		.on('touchstart', object_press)
+		// events for drag end
+		.on('mouseup', object_release)
+		.on('mouseupoutside', object_release)
+		.on('touchend', object_release)
+		.on('touchendoutside', object_release);
+	return object;
 }
 
 var GRAY_BG = PIXI.Sprite.fromImage("images/general/gray_bg.png");
