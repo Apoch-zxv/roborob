@@ -1,6 +1,7 @@
 from logger import RoboLogger
 import json
 import time
+import threading
 import platform
 from flask import Flask, send_from_directory, request
 
@@ -22,12 +23,22 @@ class RoboRobRequestHandler(object):
         self._logger = RoboLogger.get_logger()
         self._interface = interface_exposure()
         self._last_keep_alive = 0
+        self._is_new_visit = True
+        self.check_last_keep_alive()
+
+    def check_last_keep_alive(self):
+        threading.Timer(5.0, self.check_last_keep_alive).start()
+        if (time.time() - self._last_keep_alive) > RoboRobRequestHandler.MAXIMAL_KEEP_ALIVE_INTERVAL:
+            print "Visitor left"
+            self._is_new_visit = True
 
     def handle_keep_alive(self, code_json):
         self._logger.debug("Received keep alive: %s", code_json)
-        print (time.time() - self._last_keep_alive)
-        if (time.time() - self._last_keep_alive) > RoboRobRequestHandler.MAXIMAL_KEEP_ALIVE_INTERVAL:
+        if self._is_new_visit:
+            print "Visitor came"
+            self._is_new_visit = False
             self._interface["first_run"].function()
+
         self._last_keep_alive = time.time()
         return {"status": "success"}
 
