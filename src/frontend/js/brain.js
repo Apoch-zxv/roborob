@@ -704,7 +704,7 @@ function init() {
 	back_button.not_remove_when_cleared = true;
 	add_display_object(back_button, "back_button");
 	
-	var execute_code = PIXI.Sprite.fromImage("images/general/run_button_status_on.png");
+	var execute_code = create_pressable_object("images/general/run_button_status_on.png");
 	execute_code.position.x = 1079; 
 	execute_code.position.y = 594;
 	execute_code.interactive = true;

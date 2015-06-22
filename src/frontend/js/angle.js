@@ -149,6 +149,10 @@ function submit_angle_initiator(data) {
 	document.dispatchEvent(event);
 }
 
+function exit_angle_clicked(event) {
+	bg_clicked(null);
+}
+
 function open_angle(initiator) {
 	gray_shadow();
 	
@@ -164,6 +168,13 @@ function open_angle(initiator) {
 	circle.position.y = 100;
 	circle.interactive = true;
 	angle.addChild(circle);
+
+	var exit_angle = PIXI.Sprite.fromImage("images/angle/exit_angles.png");
+	exit_angle.position.x = 11;
+	exit_angle.position.y = 10;
+	exit_angle.interactive = true;
+	exit_angle.click = exit_angle.tap = exit_angle_clicked;
+	angle.addChild(exit_angle);
 	
 	var container = new PIXI.Container();
 	container.position.x = 60;
@@ -191,7 +202,7 @@ function open_angle(initiator) {
 	needle_rectangle.position.y = 100;
 	needle_rectangle.interactive = true;
 	
-	var first_needle = PIXI.Sprite.fromImage(decoration_component["angle_needle"].image_name);
+	var first_needle = create_pressable_object(decoration_component["angle_needle"].image_name);
 	first_needle.anchor = new PIXI.Point(0.5, 1);
 	first_needle.position.x = circle.width / 2;
 	first_needle.position.y = circle.height / 2;
@@ -201,7 +212,7 @@ function open_angle(initiator) {
 	circle.main_needle = first_needle;
 	needle_rectangle.addChild(first_needle);
 	
-	var second_needle = PIXI.Sprite.fromImage(decoration_component["angle_needle"].image_name);
+	var second_needle = create_pressable_object(decoration_component["angle_needle"].image_name);
 	second_needle.anchor = new PIXI.Point(0.5, 1);
 	second_needle.position.x = circle.width / 2;
 	second_needle.position.y = circle.height / 2;
@@ -228,7 +239,7 @@ function open_angle(initiator) {
 	circle.number = number;
 	angle.addChild(number);
 	
-	var submit_angle = PIXI.Sprite.fromImage("images/angle/angels_window_ok_button.png");
+	var submit_angle = create_pressable_object("images/angle/angels_window_ok_button.png");
 	submit_angle.position.x = number.position.x + 80;
 	submit_angle.position.y = 485;
 	submit_angle.interactive = true;

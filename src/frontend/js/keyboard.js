@@ -36,6 +36,14 @@ function add_space(event) {
 	add_single_char(event, " ");
 }
 
+function add_comma(event) {
+	add_single_char(event, ",");
+}
+
+function add_period(event) {
+	add_single_char(event, ".");
+}
+
 function submit_keyboard_text(event) {
 	var target = event.target;	
 	var initiator = target.parent.initiator;
@@ -58,12 +66,12 @@ function add_line (parent_obj, line, x, y) {
 	                     "ok": 211 + dist};
 	var special_callbacks = {"enter": do_nothing, "delete": keyboard_remove_char, 
 	                     "shift": keyboard_lower_upper, "123": do_nothing,
-	                     "slash": add_slash, "space": add_space,
+	                     "slash": add_slash, "space": add_space, "comman": add_comma, "Period": add_period,
 	                     "ok": submit_keyboard_text};
 	x_dist = 61 + dist;
 	curr_x = x;
 	for (var i = line.length - 1; i >= 0; i --) {
-		var button = PIXI.Sprite.fromImage("images/keyboard/keyboard_{0}_button.png".format(line[i]));
+		var button = create_pressable_object("images/keyboard/keyboard_{0}_button.png".format(line[i]));
 		button.anchor.set(1);
 		button.interactive = true;
 		button.position.y = y;
@@ -82,6 +90,10 @@ function add_line (parent_obj, line, x, y) {
 		}
 		parent_obj.addChild(button);
 	}
+}
+
+function exit_keyboard_clicked(event) {
+    bg_clicked(null);
 }
 
 function open_keyboard(initiator) {
@@ -104,6 +116,13 @@ function open_keyboard(initiator) {
 	
 	var state = new KeyboardState();
 	keyboard_bg.state = state;
+
+    var exit_keyboard = PIXI.Sprite.fromImage("images/keyboard/exit_keyboard_window.png");
+    exit_keyboard.position.x = 13;
+    exit_keyboard.position.y = 10;
+    exit_keyboard.interactive = true;
+    exit_keyboard.click = exit_keyboard.tap = exit_keyboard_clicked;
+    keyboard_bg.addChild(exit_keyboard);
 	
 	var calc_field = PIXI.Sprite.fromImage(decoration_component["keyboard_field"].image_name);
 	calc_field.position.x = 50;

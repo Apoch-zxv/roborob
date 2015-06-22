@@ -58,6 +58,10 @@ function submit_number(data) {
 	}
 }
 
+function exit_calculator_clicked(event) {
+	bg_clicked(null);
+}
+
 function open_calculator(initiator) {
 	gray_shadow();
 	
@@ -100,7 +104,7 @@ function open_calculator(initiator) {
 	for (var i = 0; i <3; i ++) {
 		curr_x_position = x_offset;
 		for (var j = 1; j <=3; j ++) {
-			var single_button = PIXI.Sprite.fromImage(decoration_component["calculator_digit_{0}".format(i * 3 + j)].image_name);
+			var single_button = create_pressable_object(decoration_component["calculator_digit_{0}".format(i * 3 + j)].image_name);
 			single_button.position.x = curr_x_position;
 			single_button.position.y = curr_y_position;
 			single_button.value = i * 3 + j;
@@ -121,7 +125,7 @@ function open_calculator(initiator) {
 	for (var j = 0; j <3; j ++) {
 		var name = last_line[j][0];
 		var on_click = last_line[j][1];
-		var single_button = PIXI.Sprite.fromImage(decoration_component[name].image_name);
+		var single_button = create_pressable_object(decoration_component[name].image_name);
 		single_button.position.x = curr_x_position;
 		single_button.position.y = curr_y_position;
 		single_button.interactive = true;
@@ -138,7 +142,7 @@ function open_calculator(initiator) {
 	curr_y_position += y_space + single_button.height;
 	
 	curr_x_position = x_offset;
-	var single_button = PIXI.Sprite.fromImage(decoration_component["calculator_window_ok_button"].image_name);
+	var single_button = create_pressable_object(decoration_component["calculator_window_ok_button"].image_name);
 	single_button.position.x = curr_x_position;
 	single_button.position.y = curr_y_position;
 	single_button.interactive = true;
@@ -147,6 +151,13 @@ function open_calculator(initiator) {
 	single_button.initiator = initiator;
 	single_button.click = single_button.tap = submit_number;
 	calc_window.addChild(single_button);
+
+	var exit_calculator = PIXI.Sprite.fromImage("images/calculator/exit_calculator.png");
+	exit_calculator.position.x = 11;
+	exit_calculator.position.y = 10;
+	exit_calculator.interactive = true;
+	exit_calculator.click = exit_calculator.tap = exit_calculator_clicked;
+	calc_window.addChild(exit_calculator);
 	
 	STAGE.addChild(calc_window);
 	
