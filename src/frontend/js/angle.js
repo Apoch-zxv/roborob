@@ -164,21 +164,21 @@ function open_angle(initiator) {
 	angle.name = "angle";
 	
 	var circle = PIXI.Sprite.fromImage(decoration_component["angle_circle"].image_name);
-	circle.position.x = 60;
-	circle.position.y = 100;
+	circle.position.x = 62;
+	circle.position.y = 140;
 	circle.interactive = true;
 	angle.addChild(circle);
 
 	var exit_angle = PIXI.Sprite.fromImage("images/angle/exit_angles.png");
-	exit_angle.position.x = 11;
+	exit_angle.position.x = 9;
 	exit_angle.position.y = 10;
 	exit_angle.interactive = true;
 	exit_angle.click = exit_angle.tap = exit_angle_clicked;
 	angle.addChild(exit_angle);
 	
 	var container = new PIXI.Container();
-	container.position.x = 60;
-	container.position.y = 100;
+	container.position.x = 62;
+	container.position.y = 140;
 	
 	var selected_circle = PIXI.Sprite.fromImage(decoration_component["angle_circle_selected"].image_name);
 	selected_circle.position.x = 0;
@@ -190,16 +190,16 @@ function open_angle(initiator) {
 	
 	var selected_mask = new PIXI.Graphics();
 	angle.addChild(selected_mask);
-	selected_mask.position.x = 60;
-	selected_mask.position.y = 100;
+	selected_mask.position.x = 62;
+	selected_mask.position.y = 140;
 	circle.selected_mask = selected_mask;
 	selected_mask.lineStyle(0);
 	
 	container.mask = selected_mask;
 	
 	var needle_rectangle = PIXI.Sprite.fromImage(decoration_component["angle_circle_transperent"].image_name);
-	needle_rectangle.position.x = 60;
-	needle_rectangle.position.y = 100;
+	needle_rectangle.position.x = 62;
+	needle_rectangle.position.y = 140;
 	needle_rectangle.interactive = true;
 	
 	var first_needle = create_pressable_object(decoration_component["angle_needle"].image_name);
@@ -240,8 +240,8 @@ function open_angle(initiator) {
 	angle.addChild(number);
 	
 	var submit_angle = create_pressable_object("images/angle/angels_window_ok_button.png");
-	submit_angle.position.x = number.position.x + 80;
-	submit_angle.position.y = 485;
+	submit_angle.position.x = 233;
+	submit_angle.position.y = 469;
 	submit_angle.interactive = true;
 	submit_angle.buttonMode = true;
 	submit_angle.initiator = initiator;

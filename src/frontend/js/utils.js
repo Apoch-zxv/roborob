@@ -155,6 +155,6 @@ function create_pressable_object(image_name) {
 
 var GRAY_BG = PIXI.Sprite.fromImage("images/general/gray_bg.png");
 GRAY_BG.interactive = true;
-GRAY_BG.alpha = 0.5;
+GRAY_BG.alpha = 0.23;
 GRAY_BG.remove_on_bg_click = true;
 GRAY_BG.click = GRAY_BG.tab = bg_clicked;

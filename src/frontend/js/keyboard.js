@@ -58,8 +58,11 @@ function submit_keyboard_text(event) {
 	document.dispatchEvent(event);
 }
 
-function add_line (parent_obj, line, x, y) {
-	var dist = 15;
+function add_line (parent_obj, line, x, y, overwrite_dist) {
+	var dist = 16;
+    if (overwrite_dist != null) {
+        dist = overwrite_dist;
+    }
 	var special_sizes = {"enter": 99 + dist, "delete": 59 + dist, 
 	                     "shift": 59 + dist, "123": 133 + dist,
 	                     "slash": 58 + dist, "space": 369 + dist,
@@ -106,8 +109,8 @@ function open_keyboard(initiator) {
 	fourth_line = ["123", "slash", "space", "ok"];
 	
 	var keyboard_bg = PIXI.Sprite.fromImage("images/keyboard//keyboard_window_BG.png");
-	keyboard_bg.position.x = 100;
-	keyboard_bg.position.y = 150;
+	keyboard_bg.position.x = 172;
+	keyboard_bg.position.y = 128;
 	keyboard_bg.interactive = true;
 	keyboard_bg.remove_on_bg_click = true;
 	keyboard_bg.name = "keyboard";
@@ -125,28 +128,28 @@ function open_keyboard(initiator) {
     keyboard_bg.addChild(exit_keyboard);
 	
 	var calc_field = PIXI.Sprite.fromImage(decoration_component["keyboard_field"].image_name);
-	calc_field.position.x = 50;
-	calc_field.position.y = 100;
+	calc_field.position.x = 58;
+	calc_field.position.y = 107;
 	calc_field.interactive = true;
 	keyboard_bg.addChild(calc_field);
 	
-	var text_field = new PIXI.Text('', {font: '45px Ariel', fill: '#E29D2B'});
-	text_field.position.x = 50;
-	text_field.position.y = 100;
-	text_field.interactive = true;
-	keyboard_bg.addChild(text_field);
+	var text_field = new PIXI.extras.BitmapText('', {font: '30px Fregat', align: "center"});
+    text_field.tint = 0xEE7842;
+	text_field.position.x = 19;
+	text_field.position.y = 10;
+    calc_field.addChild(text_field);
 	
 	keyboard_bg.text_field = text_field;
 	
 	var y_space = 70;
-	var curr_y =  calc_field.position.y + 150;
-	add_line(keyboard_bg, first_line, calc_field.position.x + calc_field.width, curr_y);
+	var curr_y = 253;
+	add_line(keyboard_bg, first_line, calc_field.position.x + calc_field.width, curr_y, null);
 	curr_y =  curr_y + y_space;
-	add_line(keyboard_bg, second_line, calc_field.position.x + calc_field.width, curr_y);
+	add_line(keyboard_bg, second_line, calc_field.position.x + calc_field.width, curr_y, null);
 	curr_y =  curr_y + y_space;
-	add_line(keyboard_bg, third_line, calc_field.position.x + calc_field.width, curr_y);
+	add_line(keyboard_bg, third_line, calc_field.position.x + calc_field.width, curr_y, null);
 	curr_y =  curr_y + y_space;
-	add_line(keyboard_bg, fourth_line, calc_field.position.x + calc_field.width, curr_y);
+	add_line(keyboard_bg, fourth_line, calc_field.position.x + calc_field.width, curr_y, 19);
 	
 	STAGE.addChild(keyboard_bg);
 	

@@ -69,14 +69,14 @@ function open_calculator(initiator) {
 	var calc_field = PIXI.Sprite.fromImage(decoration_component["calculator_field"].image_name);
 	
 	var x_offset = (calc_window.width - calc_field.width) / 2;
-	var y_offset = 90, y_space = 25, x_space = 20;
+	var y_offset = 107, y_space = 25, x_space = 18.5;
 	var curr_x_position = x_offset;
 	var curr_y_position = y_offset;
 	
 	var state = new CalculatorState();
 	
-	calc_window.position.x = 450;
-	calc_window.position.y = 150;
+	calc_window.position.x = 465;
+	calc_window.position.y = 102;
 	calc_window.interactive = true;
 	calc_window.remove_on_bg_click = true;
 	calc_window.name = "calculator";
@@ -99,7 +99,7 @@ function open_calculator(initiator) {
 	number.position.x = number.maximal_position.x - number.textWidth;
 	calc_field.addChild(number);
 	
-	curr_y_position += calc_field.height + y_space;
+	curr_y_position += calc_field.height + 24;
 	
 	for (var i = 0; i <3; i ++) {
 		curr_x_position = x_offset;
@@ -115,7 +115,7 @@ function open_calculator(initiator) {
 			curr_x_position += x_space + single_button.width;
 			calc_window.addChild(single_button);
 		}
-		curr_y_position += y_space + single_button.height;
+		curr_y_position += 20 + single_button.height;
 	}
 	
 	var last_line = [["calculator_window_--_button", remove_all], 
@@ -139,7 +139,7 @@ function open_calculator(initiator) {
 		}
 		calc_window.addChild(single_button);
 	}
-	curr_y_position += y_space + single_button.height;
+	curr_y_position += 16 + single_button.height;
 	
 	curr_x_position = x_offset;
 	var single_button = create_pressable_object(decoration_component["calculator_window_ok_button"].image_name);

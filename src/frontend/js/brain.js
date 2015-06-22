@@ -34,12 +34,12 @@ programming_components["turn_left"] = new DisplayElement("images/draw_board/turn
                                                          "images/draw_board/turn_left_icon.png", 
                                                          "images/draw_board/turn_left_block_inside_loop.png", 
                                                          "turn_left", 59, 
-                                                         new ImagePosition(61, 93, 50, 50), open_angle);
+                                                         new ImagePosition(65, 99, 50, 50), open_angle);
 programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
                                                           "images/draw_board/turn_right_icon.png", 
                                                           "images/draw_board/turn_right_block_inside_loop.png", 
                                                           "turn_right", 59, 
-                                                          new ImagePosition(96, 92, 50, 50), open_angle);
+                                                          new ImagePosition(100, 98, 50, 50), open_angle);
                                                           
 decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
 decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
@@ -142,7 +142,7 @@ function create_single_option(initiating_object, component, x_offset, y_offset, 
 
 function add_next_button_to_the_right(current_object, is_add_to_stage_param) {
 	var is_add_to_stage = (typeof is_add_to_stage_param === 'undefined') ? true : is_add_to_stage_param;
-	var start_code = PIXI.Sprite.fromImage(decoration_component["add_block"].image_name);
+	var start_code = create_pressable_object(decoration_component["add_block"].image_name);
 	start_code.position.x = current_object.position.x + current_object.width - X_CORRECTION_FACTOR;
 	start_code.position.y = MAIN_Y_AXIS - decoration_component["add_block"].connector_height_px;
 	
@@ -266,8 +266,13 @@ function replace_to_inner_texture(object) {
 	object.object.texture = inner_texture;
 }
 
-function create_decorative_sprite(reference_name, image_name, x, y, force_y) {
-	var inner_image = PIXI.Sprite.fromImage(image_name);
+function create_decorative_sprite(reference_name, image_name, x, y, force_y, pressable) {
+	var inner_image = null;
+    if (pressable) {
+        inner_image = create_pressable_object(image_name);
+    } else {
+        inner_image = PIXI.Sprite.fromImage(image_name);
+    }
 	inner_image.position.x = x;
 	inner_image.position.y = MAIN_Y_AXIS - decoration_component[reference_name].connector_height_px;
 	if (force_y) {
@@ -349,11 +354,16 @@ function find_function_start_index(last_target) {
 
 function function_init(function_name, function_code, x) {
 	var function_sprite = create_decorative_sprite("function_block", decoration_component["function_block"].image_name, x);
-	var text = new PIXI.Text(function_name, {font: '45px Ariel', fill: '#FF9069'});
-	text.anchor.set(1);
-	text.position.x = 225;
-	text.position.y = 212;
+    var text = new PIXI.extras.BitmapText('0', {font: '30px Fregat', align: "center"});
+    text.tint = 0x5E668D;
+	text.position.x = 102;
+	text.position.y = 80;
 	function_sprite.addChild(text);
+
+    var expand_function = PIXI.Sprite.fromImage("images/draw_board/open_function_button.png");
+    expand_function.position.x = 269;
+    expand_function.position.y = 249;
+    STAGE.addChild(expand_function);
 	
 	return function_sprite;
 }
@@ -421,7 +431,7 @@ function convert_to_combines_structure(start_index, end_index) {
 	STAGE.addChildAt(end_sprite, 1);
 	
 	end_sprite.function_create = create_decorative_sprite("function_create", decoration_component["function_create"].inner_form_image_name, 
-														end_sprite.position.x - 100, end_sprite.position.y, true);
+														end_sprite.position.x - 100, end_sprite.position.y, true, true);
 	init_function_create(end_sprite.function_create, end_sprite);												
 
 	STAGE.addChild(end_sprite.function_create);
@@ -701,7 +711,10 @@ function init() {
 	robot_face.position.x = 94;
 	robot_face.position.y = 39;
 	robot_face.not_remove_when_cleared = true;
-	add_display_object(robot_face, "robot_face");
+    // TODO REMOVE
+    robot_face.click = robot_face.tap = open_keyboard;
+    robot_face.interactive = true;
+    add_display_object(robot_face, "robot_face");
 	
 	var back_button = PIXI.Sprite.fromImage("images/general/back_button.png");
 	back_button.position.x = 40;
