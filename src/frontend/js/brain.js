@@ -24,22 +24,22 @@ programming_components["go_forward"] = new DisplayElement("images/draw_board/go_
                                                           "images/draw_board/forward_icon.png", 
                                                           "images/draw_board/go_forward_block_inside_loop.png", 
                                                           "go_forward", 60, 
-                                                          new ImagePosition(33, 89), open_calculator);
+                                                          new ImagePosition(34, 90, 92 - 34, 149 - 90), open_calculator);
 programming_components["go_backward"] = new DisplayElement("images/draw_board/go_backward_block.png", 
                                                            "images/draw_board/backward_icon.png", 
                                                            "images/draw_board/go_backward_block_inside_loop.png", 
                                                            "go_backward", 59, 
-                                                           new ImagePosition(86, 87), open_calculator);
+                                                           new ImagePosition(86, 87, 50, 50), open_calculator);
 programming_components["turn_left"] = new DisplayElement("images/draw_board/turn_left_block.png", 
                                                          "images/draw_board/turn_left_icon.png", 
                                                          "images/draw_board/turn_left_block_inside_loop.png", 
                                                          "turn_left", 59, 
-                                                         new ImagePosition(61, 93), open_angle);
+                                                         new ImagePosition(61, 93, 50, 50), open_angle);
 programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
                                                           "images/draw_board/turn_right_icon.png", 
                                                           "images/draw_board/turn_right_block_inside_loop.png", 
                                                           "turn_right", 59, 
-                                                          new ImagePosition(96, 92), open_angle);
+                                                          new ImagePosition(96, 92, 50, 50), open_angle);
                                                           
 decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
 decoration_component["add_block"] = new DecorationElement("images/draw_board/add_next_block.png", "images/draw_board/add_block_inside_loop.png", 0);
@@ -51,7 +51,7 @@ decoration_component["robot_face"] = new DecorationElement("images/general/robot
 decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 93);
 decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 140);
 decoration_component["loop_start"] = new DecorationElement(null, "images/draw_board/loop_block_left_side.png", 89);
-decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 165, new ImagePosition(85, 63, 50, 50), open_calculator);
+decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 165, new ImagePosition(38, 15, 90 - 38, 68 - 15), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/draw_board/loop_block_middle.png", 89);
 
 decoration_component["keyboard_field"] = new DecorationElement("images/keyboard/keyboard_field.png", null, 0);
@@ -85,8 +85,14 @@ function display_on_initiator(initiator, display_text) {
 	var display_object_index = find_displayed_object_index(initiator);
 	var display_object = DISPLAYED_ELEMENT[display_object_index];
 	var component = programming_components[display_object.name];
+	if (component == null) {
+		component = decoration_component[display_object.name];
+	}
 	
 	display_object.object.parameter.text = display_text;
+	display_object.object.parameter.updateText();
+	display_object.object.parameter.position.x = component.interactive_location.x + (component.interactive_location.width - display_object.object.parameter.textWidth) / 2;
+	display_object.object.parameter.position.y = component.interactive_location.y + (component.interactive_location.height - display_object.object.parameter.textHeight) / 2;
 }
 
 
@@ -302,9 +308,8 @@ function touchable_image_click_event(data) {
 function add_interactive_part(name, component, sprite) {
 	var interactive_location = component.interactive_location;
 	
-	var interactive_rectangle = new PIXI.Rectangle(interactive_location.x - interactive_location.width, 
-		                                     interactive_location.y - interactive_location.height, 
-		                                     interactive_location.width, interactive_location.height);
+	var interactive_rectangle = new PIXI.Rectangle(interactive_location.x, interactive_location.y, interactive_location.width,
+		                                     interactive_location.height);
 	sprite.interactive_rectangle = interactive_rectangle;
 	
 	sprite.interactive = true;
@@ -314,8 +319,8 @@ function add_interactive_part(name, component, sprite) {
 	
 	var text = new PIXI.extras.BitmapText('', {font: '30px Fregat', align: "center"});
 	text.tint = 0x60A860;
-	text.position.x = interactive_location.x - interactive_location.width + 21;
-	text.position.y = interactive_location.y - interactive_location.height + 13;
+	text.position.x = interactive_location.x;
+	text.position.y = interactive_location.y;
 	sprite.addChild(text);
 	
 	sprite.parameter = text;
