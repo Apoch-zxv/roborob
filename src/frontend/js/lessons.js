@@ -66,12 +66,15 @@ function reposition_all_lessons() {
 function square_lesson(data) {
 	gray_shadow();
 	var level1_window = PIXI.Sprite.fromImage("images/lessons/level_1_window.png");
-	level1_window.position.x = 263;
-	level1_window.position.y = 218;
+	level1_window.position.x = 263 + 771 / 2;
+	level1_window.position.y = 218 + 394 / 2;
 	level1_window.interactive = true;
 	level1_window.remove_on_bg_click = true;
+	level1_window.anchor.set(0.5);
 	level1_window.name = "level1_window";
-	STAGE.addChild(level1_window);
+	appear_effect(level1_window, 771, 394, 80);
+
+	add_ok_button(level1_window, 700, 300, bg_clicked);
 
     var seen_lesson = PIXI.Sprite.fromImage(CURRENT_SELECTED_LESSON.lesson_image);
     seen_lesson.position.x = CURRENT_SELECTED_LESSON.object.position.x;
@@ -211,6 +214,8 @@ function square_lesson_code_submition_done(data) {
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "well_done_its_working_window";
 	STAGE.addChild(add_next_block);
+
+	add_ok_button(add_next_block, 600, 300, bg_clicked);
 }
 
 function square_lesson_keyboard_opened(data) {
@@ -227,7 +232,11 @@ function square_lesson_keyboard_closed(data) {
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "end_level_1_window";
 
-    setTimeout(function(){ gray_shadow();STAGE.addChild(add_next_block);; }, 5000);
+    setTimeout(function(){
+		gray_shadow();
+		STAGE.addChild(add_next_block);
+		add_ok_button(add_next_block, 700, 400, bg_clicked);;
+	}, 5000);
 }
 
 decoration_component["lesson_not_done"] = new DecorationElement("images/lessons/undone_lesson_icon.png", null, 0);
