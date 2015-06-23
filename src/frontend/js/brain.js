@@ -49,7 +49,7 @@ decoration_component["start_code"] = new DecorationElement("images/draw_board/fi
 decoration_component["robot_face"] = new DecorationElement("images/general/robot_face.png", null, 0);
 
 decoration_component["function_create"] = new DecorationElement(null, "images/draw_board/make_function_button.png", 93);
-decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 140);
+decoration_component["function_block"] = new DecorationElement("images/draw_board/function_block.png", null, 61);
 decoration_component["loop_start"] = new DecorationElement(null, "images/draw_board/loop_block_left_side.png", 89);
 decoration_component["loop_end"] = new DecorationElement(null, "images/draw_board/loop_block_rightt_side.png", 165, new ImagePosition(38, 15, 90 - 38, 68 - 15), open_calculator);
 decoration_component["loop_bg"] = new DecorationElement(null, "images/draw_board/loop_block_middle.png", 89);
@@ -128,7 +128,7 @@ function init_options_window(previous_object, previous_connector) {
 }
 
 function create_single_option(initiating_object, component, x_offset, y_offset, previous_connector) {
-	var single_option = PIXI.Sprite.fromImage(component.options_image_name);
+	var single_option = create_pressable_object(component.options_image_name);
 	single_option.position.x = x_offset;
 	single_option.position.y = y_offset;
 	single_option.interactive = true;
@@ -352,9 +352,13 @@ function find_function_start_index(last_target) {
 	return loop_start_index;
 }
 
+function capitalize(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function function_init(function_name, function_code, x) {
 	var function_sprite = create_decorative_sprite("function_block", decoration_component["function_block"].image_name, x);
-    var text = new PIXI.extras.BitmapText('0', {font: '30px Fregat', align: "center"});
+    var text = new PIXI.extras.BitmapText(capitalize(function_name), {font: '30px Fregat', align: "center"});
     text.tint = 0x5E668D;
 	text.position.x = 102;
 	text.position.y = 80;
@@ -694,6 +698,41 @@ function add_start_code() {
 	add_stage_object(start_code, "start_code");
 }
 
+function welcome_window() {
+	var welcome_window = PIXI.Sprite.fromImage("images/lessons/Welcome_window.png");
+	welcome_window.position.x = 600;
+	welcome_window.position.y = 400;
+	welcome_window.interactive = true;
+	welcome_window.remove_on_bg_click = true;
+	welcome_window.remove_on_obj_click = true;
+	welcome_window.name = "Welcome_window";
+	welcome_window.anchor.set(0.5);
+
+	var surface = PIXI.Sprite.fromImage("images/lessons/paper_welcome_window.png");
+	surface.position.x = -200;
+	surface.position.y = 60;
+	surface.interactive = true;
+	welcome_window.addChild(surface);
+
+	var ruler = PIXI.Sprite.fromImage("images/lessons/ruler_welcome_window.png");
+	ruler.position.x = surface.position.x + 100;
+	ruler.position.y = surface.position.y - 120;
+	ruler.original_y = ruler.position.y;
+	ruler.dest_y = surface.position.y - 50;
+	ruler.interactive = true;
+	welcome_window.addChild(ruler);
+
+	add_ok_button(welcome_window, 300, 200, bg_clicked);
+
+	appear_effect(welcome_window, 650, 500, 200);
+
+	createjs.Tween.get(ruler).wait(200).play(
+		createjs.Tween.get(ruler,{paused:true, loop:true})
+			.to({y:ruler.dest_y},1500)
+			.to({y:ruler.original_y},1500)
+	);
+}
+
 function init() {
 	// create an new instance of a pixi STAGE
     STAGE.interactive = true;
@@ -711,9 +750,6 @@ function init() {
 	robot_face.position.x = 94;
 	robot_face.position.y = 39;
 	robot_face.not_remove_when_cleared = true;
-    // TODO REMOVE
-    robot_face.click = robot_face.tap = open_keyboard;
-    robot_face.interactive = true;
     add_display_object(robot_face, "robot_face");
 	
 	var back_button = PIXI.Sprite.fromImage("images/general/back_button.png");
@@ -788,7 +824,8 @@ function init() {
 	loader.load(function () {
     	console.log('Finished loading');
 	});
-	
+
+	welcome_window();
 	// init_choose_screen();
 	// init_splash_screen();
 	

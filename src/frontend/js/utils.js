@@ -21,6 +21,16 @@ function DecorationElement(image_name, inner_form_image_name, connector_height_p
 	this.open_interaction_window = open_interaction_window || null;
 }
 
+function add_ok_button(parent, x, y, on_click) {
+	var ok_button = create_pressable_object("images/general/window_ok_button.png");
+	ok_button.position.x = x;
+	ok_button.position.y = y;
+	ok_button.interactive = true;
+	ok_button.buttonMode = true;
+	ok_button.click = ok_button.tap = on_click;
+	parent.addChild(ok_button);
+}
+
 function ImagePosition(x, y, width, height) {
 	this.x = x;
 	this.y = y;
@@ -46,6 +56,16 @@ function fade_out(object, wait_time, after_fade, fade_speed) {
 	             .wait(wait_time)
                  .to({alpha:0}, fade_speed)
                  .call(after_fade);
+}
+
+function appear_effect(object, dest_width, dest_height, fade_speed) {
+	object.alpha = 0;
+	object.width = 0;
+	object.height = 0;
+	STAGE.addChild(object);
+	createjs.Tween.get(object)
+		.to({alpha:1, width:dest_width, height: dest_height}, fade_speed, createjs.Ease.cubicIn)
+		.call();
 }
 
 function remove_on_any_click() {
