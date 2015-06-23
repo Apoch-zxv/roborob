@@ -40,6 +40,6 @@ def degree_to_ts(length):
 
 
 def interface_exposure():
-    return {"go_forward": Operation(forward, length_to_ts), "go_backward": Operation(backward, length_to_ts),
+    return {"init": Operation(init, None), "go_forward": Operation(forward, length_to_ts), "go_backward": Operation(backward, length_to_ts),
             "turn_left": Operation(turn_left, degree_to_ts), "turn_right": Operation(turn_right, degree_to_ts),
             "first_run": Operation(first_run, None)}

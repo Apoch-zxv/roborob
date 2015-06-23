@@ -25,6 +25,7 @@ class RoboRobRequestHandler(object):
         self._last_keep_alive = 0
         self._is_new_visit = True
         self.check_last_keep_alive()
+        self._interface["init"].function()
 
     def check_last_keep_alive(self):
         threading.Timer(5.0, self.check_last_keep_alive).start()
