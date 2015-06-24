@@ -676,12 +676,12 @@ function extract_code(data, start_index, end_index) {
 		if (curr_component.name == "loop_start") {
 			var inner_loop = [];
 			inner_loop.parent = curr_code;
-			curr_code.push(inner_loop);
+			curr_code.push({"name": "loop", "content": inner_loop, "param": 3});
 			curr_code = inner_loop;
 		} else if (curr_component.name == "loop_end") {
 			curr_code = curr_code.parent;
 		} else if (is_programmable_component(curr_component.name)) {
-			curr_code.push(curr_component.name);		
+			curr_code.push({"name": curr_component.name, "param": curr_component.object.parameter.text});
 		}
 	}
 	
