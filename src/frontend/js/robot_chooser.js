@@ -49,6 +49,7 @@ function display_additional_options(parent, x, y) {
 
 function open_application() {
 	STAGE.removeChild(ROBOT_SCREEN_BG);
+	init_draw_board();
 }
 
 function init_choose_screen() {

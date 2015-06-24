@@ -39,7 +39,8 @@ function ImagePosition(x, y, width, height) {
 }
 
 function gray_shadow() {
-	STAGE.addChild(GRAY_BG);
+	fade_in(GRAY_BG, GRAY_BG_ALPHA, 0, null, APPEAR_SPEED);
+
 }
 
 function remove_gray_shadow() {
@@ -51,6 +52,15 @@ function move_object(object, dest, speed) {
                  .to({x:dest.x, y:dest.y}, speed);
 }
 
+function fade_in(object, dest_alpha, wait_time, after_fade, fade_speed) {
+	object.alpha = 0;
+	STAGE.addChild(GRAY_BG);
+	createjs.Tween.get(object)
+		.wait(wait_time)
+		.to({alpha:dest_alpha}, fade_speed)
+		.call(after_fade);
+}
+
 function fade_out(object, wait_time, after_fade, fade_speed) {
 	createjs.Tween.get(object)
 	             .wait(wait_time)
@@ -58,14 +68,15 @@ function fade_out(object, wait_time, after_fade, fade_speed) {
                  .call(after_fade);
 }
 
-function appear_effect(object, dest_width, dest_height, fade_speed) {
+function appear_effect(object, dest_width, dest_height) {
 	object.alpha = 0;
 	object.width = 0;
 	object.height = 0;
 	STAGE.addChild(object);
 	createjs.Tween.get(object)
-		.to({alpha:1, width:dest_width, height: dest_height}, fade_speed, createjs.Ease.cubicIn)
+		.to({alpha:1, width:dest_width, height: dest_height}, APPEAR_SPEED)
 		.call();
+	//, createjs.Ease.cubicIn
 }
 
 function remove_on_any_click() {
@@ -140,6 +151,8 @@ function bg_clicked(data) {
 			remove_names.push(to_remove[i].name);
 		}
 	}
+
+	data.stopPropagation();
 	
 	var event = new CustomEvent('back_ground_click', {'detail': remove_names});
 	document.dispatchEvent(event);
@@ -173,8 +186,11 @@ function create_pressable_object(image_name) {
 	return object;
 }
 
+var GRAY_BG_ALPHA = 0.23;
+var APPEAR_SPEED = 60;
+
 var GRAY_BG = PIXI.Sprite.fromImage("images/general/gray_bg.png");
 GRAY_BG.interactive = true;
 GRAY_BG.alpha = 0.23;
 GRAY_BG.remove_on_bg_click = true;
-GRAY_BG.click = GRAY_BG.tab = bg_clicked;
+GRAY_BG.click = GRAY_BG.tap = bg_clicked;

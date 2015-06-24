@@ -73,10 +73,16 @@ for (var i = 0; i <= 9; i++) {
 	decoration_component["calculator_digit_{0}".format(i)] = new DecorationElement("images/calculator/calculator_window_{0}_button.png".format(i), null, 0);
 }
 
+var LOADING_CURVE = null;
+
 function animate() {
     requestAnimationFrame( animate );
- 
-        // render the STAGE   
+
+	if (LOADING_CURVE != null) {
+		LOADING_CURVE.rotation += 0.1;
+	}
+
+        // render the STAGE
     RENDERER.render(STAGE);
     
 }
@@ -639,8 +645,23 @@ function replace_object(old_object, new_object) {
 function switch_to_waiting(button) {
 	var original_texture = button.texture;
 	button.texture = PIXI.Texture.fromImage("images/general/run_button_loading_back_ground.png");
+	var loading_circle = PIXI.Sprite.fromImage("images/general/loading_circle.png");
+	loading_circle.position.x = 50;
+	loading_circle.position.y = 50;
+	button.addChild(loading_circle);
+
+	var curve = PIXI.Sprite.fromImage("images/general/test_curve.png");
+	curve.position.x = 50 + 28;
+	curve.position.y = 50 + 28;
+	curve.anchor = new PIXI.Point(1, 1);
+	button.addChild(curve);
+	LOADING_CURVE = curve;
+
 	setTimeout(function(){
     	button.texture = original_texture;
+		button.removeChild(loading_circle);
+		button.removeChild(curve);
+		LOADING_CURVE = null;
     	var event = new CustomEvent('code_submition_done');
 		document.dispatchEvent(event);
 	}, 5000);
@@ -724,7 +745,7 @@ function welcome_window() {
 
 	add_ok_button(welcome_window, 300, 200, bg_clicked);
 
-	appear_effect(welcome_window, 650, 500, 200);
+	appear_effect(welcome_window, 650, 500);
 
 	createjs.Tween.get(ruler).wait(200).play(
 		createjs.Tween.get(ruler,{paused:true, loop:true})
@@ -733,33 +754,36 @@ function welcome_window() {
 	);
 }
 
-function init() {
-	// create an new instance of a pixi STAGE
-    STAGE.interactive = true;
-    
-    // create a texture from an image path
-    var bg = PIXI.Sprite.fromImage("images/general/BG.png");
-    bg.interactive = true;
-    bg.click = bg.tab = bg_clicked;
-    bg.not_remove_when_cleared = true;
+function show_first_lesson(event) {
+	document.removeEventListener("back_ground_click", show_first_lesson);
+	var next_event = {"target": {"lesson": LESSONS[0]}}
+	select_lesson_click(next_event)
+}
+
+function init_draw_board() {
+	// create a texture from an image path
+	var bg = PIXI.Sprite.fromImage("images/general/BG.png");
+	bg.interactive = true;
+	bg.click = bg.tab = bg_clicked;
+	bg.not_remove_when_cleared = true;
 	STAGE.addChild(bg);
-	
+
 	add_start_code();
-	
+
 	var robot_face = PIXI.Sprite.fromImage(decoration_component["robot_face"].image_name);
 	robot_face.position.x = 94;
 	robot_face.position.y = 39;
 	robot_face.not_remove_when_cleared = true;
-    add_display_object(robot_face, "robot_face");
-	
+	add_display_object(robot_face, "robot_face");
+
 	var back_button = PIXI.Sprite.fromImage("images/general/back_button.png");
 	back_button.position.x = 40;
 	back_button.position.y = 50;
 	back_button.not_remove_when_cleared = true;
 	add_display_object(back_button, "back_button");
-	
+
 	var execute_code = create_pressable_object("images/general/run_button_status_on.png");
-	execute_code.position.x = 1079; 
+	execute_code.position.x = 1079;
 	execute_code.position.y = 594;
 	execute_code.interactive = true;
 	execute_code.buttonMode = true;
@@ -767,9 +791,18 @@ function init() {
 
 	execute_code.click = execute_code.tap = submit_code;
 	add_display_object(execute_code, "execute_code");
-	
+
 	add_lesson_icons();
- 
+
+	document.addEventListener("back_ground_click", show_first_lesson);
+
+	welcome_window();
+}
+
+function init() {
+	// create an new instance of a pixi STAGE
+    STAGE.interactive = true;
+    
     RENDERER.view.style.position = "absolute";
 	RENDERER.view.style.width = window.innerWidth + "px";
 	RENDERER.view.style.height = window.innerHeight + "px";
@@ -825,10 +858,11 @@ function init() {
     	console.log('Finished loading');
 	});
 
-	welcome_window();
-	// init_choose_screen();
-	// init_splash_screen();
-	
+	init_splash_screen();
+	//init_draw_board();
+	//createjs.Ticker.timingMode = createjs.Ticker.RAF;
+	createjs.Ticker.setFPS(500);
+
     requestAnimationFrame( animate );
 }
 

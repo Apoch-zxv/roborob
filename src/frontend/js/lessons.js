@@ -72,9 +72,9 @@ function square_lesson(data) {
 	level1_window.remove_on_bg_click = true;
 	level1_window.anchor.set(0.5);
 	level1_window.name = "level1_window";
-	appear_effect(level1_window, 771, 394, 80);
+	add_ok_button(level1_window, 771, 394, bg_clicked);
 
-	add_ok_button(level1_window, 700, 300, bg_clicked);
+	appear_effect(level1_window, 771, 394);
 
     var seen_lesson = PIXI.Sprite.fromImage(CURRENT_SELECTED_LESSON.lesson_image);
     seen_lesson.position.x = CURRENT_SELECTED_LESSON.object.position.x;

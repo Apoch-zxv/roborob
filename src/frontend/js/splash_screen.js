@@ -8,6 +8,7 @@ function init_splash_screen() {
 	
 	function after_fade() {
 		STAGE.removeChild(bg);
+		init_choose_screen();
 	}
 	
 	fade_out(bg, 5000, after_fade, 150);
