@@ -38,7 +38,7 @@ programming_components["turn_left"] = new DisplayElement("images/draw_board/turn
 programming_components["turn_right"] = new DisplayElement("images/draw_board/turn_right_block.png", 
                                                           "images/draw_board/turn_right_icon.png", 
                                                           "images/draw_board/turn_right_block_inside_loop.png", 
-                                                          "turn_right", 59, 
+                                                          "turn_right", 58.5,
                                                           new ImagePosition(100, 98, 50, 50), open_angle);
                                                           
 decoration_component["arrows_menu"] = new DecorationElement("images/general/arrows_menu.png", null, 169);
@@ -114,6 +114,7 @@ function init_options_window(previous_object, previous_connector) {
 	var next_child = create_single_option(previous_object, programming_components["go_forward"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
+    options_window.go_forward = next_child;
 	
 	next_child = create_single_option(previous_object, programming_components["go_backward"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
@@ -122,12 +123,14 @@ function init_options_window(previous_object, previous_connector) {
 	next_child = create_single_option(previous_object, programming_components["turn_right"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
+    options_window.turn_right = next_child;
 	
 	next_child = create_single_option(previous_object, programming_components["turn_left"], x_offset, y_current_offset, previous_connector);
 	y_current_offset += next_child.height + extra_y;
 	options_window.addChild(next_child);
 	
 	var event = new CustomEvent('options_window_openned');
+    event.originator = options_window;
 	document.dispatchEvent(event);
 	
 	return options_window;
@@ -243,7 +246,7 @@ function add_bigger_image(data) {
 	
 	var event = new CustomEvent('options_window_selection_clicked', {'detail': this.to_add_image.reference_name});
 	document.dispatchEvent(event);
-	
+
 	bigger_image.open_interaction_window(bigger_image);
 }
 
@@ -366,8 +369,8 @@ function function_init(function_name, function_code, x) {
 	var function_sprite = create_decorative_sprite("function_block", decoration_component["function_block"].image_name, x);
     var text = new PIXI.extras.BitmapText(capitalize(function_name), {font: '30px Fregat', align: "center"});
     text.tint = 0x5E668D;
-	text.position.x = 102;
-	text.position.y = 80;
+	text.position.x = 105;
+	text.position.y = 74;
 	function_sprite.addChild(text);
 
     var expand_function = PIXI.Sprite.fromImage("images/draw_board/open_function_button.png");
@@ -433,7 +436,7 @@ function convert_to_combines_structure(start_index, end_index) {
 	end_index ++;										  
 	var end_element = DISPLAYED_ELEMENT[end_index];
 	var end_sprite = create_decorative_sprite("loop_end", decoration_component["loop_end"].inner_form_image_name, 
-														end_element.object.position.x, end_element.object.position.y);
+														end_element.object.position.x, end_element.object.position.y, false, true);
 														
 	add_interactive_part("loop_end", decoration_component["loop_end"], end_sprite);
 	DISPLAYED_ELEMENT.splice(end_index + 1, 0, new VisibleComponent("loop_end", end_sprite));
@@ -615,6 +618,7 @@ function open_options_window(data) {
 	var options_window = init_options_window(this, previous_connector);
 	options_window.remove_on_bg_click = true;
 	options_window.name = "options_window";
+    createjs.Sound.play("add_block");
 	STAGE.addChild(options_window);
 }
 
@@ -720,9 +724,10 @@ function add_start_code() {
 }
 
 function welcome_window() {
+    //gray_shadow();
 	var welcome_window = PIXI.Sprite.fromImage("images/lessons/Welcome_window.png");
-	welcome_window.position.x = 600;
-	welcome_window.position.y = 400;
+	welcome_window.position.x = 322 + 644 / 2;
+	welcome_window.position.y = 166 + 496 / 2;
 	welcome_window.interactive = true;
 	welcome_window.remove_on_bg_click = true;
 	welcome_window.remove_on_obj_click = true;
@@ -730,20 +735,20 @@ function welcome_window() {
 	welcome_window.anchor.set(0.5);
 
 	var surface = PIXI.Sprite.fromImage("images/lessons/paper_welcome_window.png");
-	surface.position.x = -200;
-	surface.position.y = 60;
+	surface.position.x = -183;
+	surface.position.y = 81;
 	surface.interactive = true;
 	welcome_window.addChild(surface);
 
 	var ruler = PIXI.Sprite.fromImage("images/lessons/ruler_welcome_window.png");
-	ruler.position.x = surface.position.x + 100;
-	ruler.position.y = surface.position.y - 120;
+	ruler.position.x = -94;
+	ruler.position.y = -59;
 	ruler.original_y = ruler.position.y;
-	ruler.dest_y = surface.position.y - 50;
+	ruler.dest_y = 12;
 	ruler.interactive = true;
 	welcome_window.addChild(ruler);
 
-	add_ok_button(welcome_window, 300, 200, bg_clicked);
+	add_ok_button(welcome_window, 211, 201, bg_clicked);
 
 	appear_effect(welcome_window, 650, 500);
 
@@ -776,10 +781,13 @@ function init_draw_board() {
 	robot_face.not_remove_when_cleared = true;
 	add_display_object(robot_face, "robot_face");
 
-	var back_button = PIXI.Sprite.fromImage("images/general/back_button.png");
+	var back_button = create_pressable_object("images/general/back_button.png");
 	back_button.position.x = 40;
 	back_button.position.y = 50;
 	back_button.not_remove_when_cleared = true;
+    back_button.interactive = true;
+    back_button.buttonMode = true;
+    back_button.click = back_button.tap = init_choose_screen;
 	add_display_object(back_button, "back_button");
 
 	var execute_code = create_pressable_object("images/general/run_button_status_on.png");
@@ -797,6 +805,14 @@ function init_draw_board() {
 	document.addEventListener("back_ground_click", show_first_lesson);
 
 	welcome_window();
+}
+
+function play_sound(event) {
+    createjs.Sound.play("create_loop");
+}
+
+function key_pressed(event) {
+    var instance = createjs.Sound.play("key_pressed");
 }
 
 function init() {
@@ -853,15 +869,27 @@ function init() {
 	for (var i = 0; i < arrayLength; i++) {
 	    loader.add(assetsToLoad[i], assetsToLoad[i]);
 	}
+    loader.add("images/general/window_ok_button.png", "images/general/window_ok_button.png");
 	loader.add("fonts/fregat.fnt", { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT });
 	loader.load(function () {
     	console.log('Finished loading');
+        init_draw_board();
 	});
 
-	init_splash_screen();
-	//init_draw_board();
+    start_keep_alive();
+    //init_choose_screen();
+	//init_splash_screen();
+
 	//createjs.Ticker.timingMode = createjs.Ticker.RAF;
 	createjs.Ticker.setFPS(500);
+
+    createjs.Sound.alternateExtensions = ["wav"];
+    createjs.Sound.registerSound("sounds/add_block_button.wav", "add_block");
+    createjs.Sound.registerSound("sounds/creating_loop_group.wav", "create_loop");
+    createjs.Sound.registerSound("sounds/keyboard_and_calculator_buttons.wav", "key_pressed");
+
+    document.addEventListener("loop_creation_end", play_sound);
+    document.addEventListener("key_pressed", key_pressed);
 
     requestAnimationFrame( animate );
 }

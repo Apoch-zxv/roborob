@@ -35,7 +35,7 @@ function select_lesson(lesson) {
 		CURRENT_SELECTED_LESSON.object.texture = CURRENT_SELECTED_LESSON.texture_not_done;
 	}
 	
-	if (CURRENT_SELECTED_LESSON != lesson) {
+	//if (CURRENT_SELECTED_LESSON != lesson) {
 		clear_board();
 		if (CURRENT_SELECTED_LESSON != null) {
 			remove_lesson_listener(CURRENT_SELECTED_LESSON);
@@ -45,7 +45,7 @@ function select_lesson(lesson) {
 		
 		var event = new CustomEvent('lesson_load', { 'detail': lesson });
 		document.dispatchEvent(event);
-	}
+	//}
 	
 	//reposition_all_lessons();
 }
@@ -72,7 +72,7 @@ function square_lesson(data) {
 	level1_window.remove_on_bg_click = true;
 	level1_window.anchor.set(0.5);
 	level1_window.name = "level1_window";
-	add_ok_button(level1_window, 771, 394, bg_clicked);
+	add_ok_button(level1_window, 666 - 771 / 2, 303 - 394 / 2, bg_clicked);
 
 	appear_effect(level1_window, 771, 394);
 
@@ -98,7 +98,8 @@ function square_lesson_bg_click(data) {
 				first_block.remove_on_bg_click = true;
 				first_block.remove_on_obj_click = true;
 				first_block.name = "square_first_block";
-				STAGE.addChild(first_block);
+                side_appear_effect(first_block, "up");
+                press_animation(DISPLAYED_ELEMENT[0].object);
 				break;
 			case "well_done_its_working_window":
 				var first_block = PIXI.Sprite.fromImage("images/lessons/use_function_small_window.png");
@@ -107,8 +108,8 @@ function square_lesson_bg_click(data) {
 				first_block.interactive = true;
 				first_block.remove_on_bg_click = true;
 				first_block.remove_on_obj_click = true;
-				first_block.name = "square_first_block";
-				STAGE.addChild(first_block);
+				first_block.name = "use_function_small";
+                side_appear_effect(first_block, "right");
 				break;
 		}
 	}
@@ -134,7 +135,8 @@ function square_lesson_options_window(data) {
 		touch_the_forward_block.remove_on_bg_click = true;
 		touch_the_forward_block.remove_on_obj_click = true;
 		touch_the_forward_block.name = "touch_the_forward_block_small_window";
-		STAGE.addChild(touch_the_forward_block);
+        side_appear_effect(touch_the_forward_block, "left");
+        press_animation(data.originator.go_forward);
 	} else {
 		var touch_the_forward_block = PIXI.Sprite.fromImage("images/lessons/touch_the_turn_block_small_window.png");
 		touch_the_forward_block.position.x = 558;
@@ -143,7 +145,8 @@ function square_lesson_options_window(data) {
 		touch_the_forward_block.remove_on_bg_click = true;
 		touch_the_forward_block.remove_on_obj_click = true;
 		touch_the_forward_block.name = "touch_the_forward_block_small_window";
-		STAGE.addChild(touch_the_forward_block);
+        side_appear_effect(touch_the_forward_block, "left");
+        press_animation(data.originator.turn_right);
 	}
 }
 
@@ -165,7 +168,7 @@ function square_lesson_calculator_closed(data) {
 			add_next_block.remove_on_bg_click = true;
 			add_next_block.remove_on_obj_click = true;
 			add_next_block.name = "_run_small_window";
-			STAGE.addChild(add_next_block);
+            side_appear_effect(add_next_block, "right");
 			break;
 		case "go_forward":
 			var add_next_block = PIXI.Sprite.fromImage("images/lessons/add_next_block_small_window.png");
@@ -175,7 +178,8 @@ function square_lesson_calculator_closed(data) {
 			add_next_block.remove_on_bg_click = true;
 			add_next_block.remove_on_obj_click = true;
 			add_next_block.name = "add_next_block_small_window";
-			STAGE.addChild(add_next_block);
+            side_appear_effect(add_next_block, "up");
+            press_animation(DISPLAYED_ELEMENT[2].object);
 			break;
 	}
 	
@@ -189,7 +193,7 @@ function square_lesson_angle_closed(data) {
 	add_next_block.remove_on_bg_click = true;
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "drag_thist_block_small_window";
-	STAGE.addChild(add_next_block);
+    side_appear_effect(add_next_block, "up");
 }
 
 
@@ -201,21 +205,23 @@ function square_lesson_loop_created(data) {
 	add_next_block.remove_on_bg_click = true;
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "how_many_lines_small_window";
-	STAGE.addChild(add_next_block);
+    side_appear_effect(add_next_block, "left");
+    press_animation(data.detail);
 }
 
 function square_lesson_code_submition_done(data) {
 	gray_shadow();
 	var add_next_block = PIXI.Sprite.fromImage("images/lessons/well_done_its_working_window.png");
-	add_next_block.position.x = 254;
-	add_next_block.position.y = 269;
+	add_next_block.position.x = 254 + 767 /2;
+	add_next_block.position.y = 269 + 355 / 2;
 	add_next_block.interactive = true;
+    add_next_block.anchor.set(0.5);
 	add_next_block.remove_on_bg_click = true;
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "well_done_its_working_window";
-	STAGE.addChild(add_next_block);
 
-	add_ok_button(add_next_block, 600, 300, bg_clicked);
+	add_ok_button(add_next_block, 631 - 767 /2, 260 - 355 / 2, bg_clicked);
+    appear_effect(add_next_block, 767, 355);
 }
 
 function square_lesson_keyboard_opened(data) {
@@ -225,18 +231,19 @@ function square_lesson_keyboard_opened(data) {
 
 function square_lesson_keyboard_closed(data) {
 	var add_next_block = PIXI.Sprite.fromImage("images/lessons/end_level_1_window.png");
-	add_next_block.position.x = 234;
-	add_next_block.position.y = 215;
+	add_next_block.position.x = 234 + 799 / 2;
+	add_next_block.position.y = 215 + 403 / 2;
 	add_next_block.interactive = true;
+    add_next_block.anchor.set(0.5);
 	add_next_block.remove_on_bg_click = true;
 	add_next_block.remove_on_obj_click = true;
 	add_next_block.name = "end_level_1_window";
 
     setTimeout(function(){
 		gray_shadow();
-		STAGE.addChild(add_next_block);
-		add_ok_button(add_next_block, 700, 400, bg_clicked);;
-	}, 5000);
+		add_ok_button(add_next_block, 698 - 799 / 2, 317 - 403 / 2, bg_clicked);;
+        appear_effect(add_next_block, 799, 403);
+	}, 8000);
 }
 
 decoration_component["lesson_not_done"] = new DecorationElement("images/lessons/undone_lesson_icon.png", null, 0);
@@ -267,14 +274,18 @@ var LESSONS = [new Lesson("Square", decoration_component["lesson_1"].image_name,
                new Lesson("10", decoration_component["lesson_10"].image_name, null)];
 
 function add_lesson_icons() {
-	for (var i = LESSONS.length - 1; i >= 0; i --) {
+    var cur_x = 630 + 68 / 2;
+	for (var i = 0; i < LESSONS.length; i ++) {
 		var lesson = LESSONS[i];
 		var lesson_select = PIXI.Sprite.fromImage(decoration_component["lesson_not_done"].image_name);
 		var lesson_selected = PIXI.Texture.fromImage(lesson.lesson_image);
 		lesson.texture_not_done = lesson_select.texture;
 		lesson.texture_selected = lesson_selected;
+        if (i == 0) {
+            lesson_select.texture = lesson.texture_selected;
+        }
 		lesson_select.anchor.set(0.5);
-		lesson_select.position.x = 1225 - (LESSONS.length - 1 - i) * 62;
+		lesson_select.position.x = cur_x;
 		lesson_select.position.y = 59;
 		lesson_select.interactive = true;
 		lesson_select.buttonMode = true;
@@ -283,5 +294,11 @@ function add_lesson_icons() {
 		lesson.object = lesson_select;
 		lesson_select.click = lesson_select.tap = select_lesson_click;
 		add_display_object(lesson_select, "lesson_select");
+
+        if (i == 0) {
+            cur_x += 80;
+        } else {
+            cur_x += 60 ;
+        }
 	}
 }

@@ -28,8 +28,13 @@ function add_dragging_events_parent(object) {
         .on('touchmove', drag_move);
 }
 
-function display_robot(parent, image_name, x, y) {
-	var single_robot = PIXI.Sprite.fromImage(image_name);
+function display_robot(parent, image_name, x, y, is_pressable) {
+	var single_robot = null;
+    if (is_pressable) {
+        single_robot = create_pressable_object(image_name);
+    } else {
+        single_robot = PIXI.Sprite.fromImage(image_name);
+    }
 	single_robot.anchor.x = 0;
 	single_robot.anchor.y = 1;
 	single_robot.position.x = x;
@@ -43,7 +48,7 @@ function display_additional_options(parent, x, y) {
 	var single_robot = PIXI.Sprite.fromImage("images/robot_select/robot_screen_buttons.png");
 	single_robot.position.x = x;
 	single_robot.position.y = y;
-	parent.addChild(single_robot);
+    side_appear_effect(single_robot, "up", 50, parent);
 	return single_robot;
 }
 
@@ -60,24 +65,38 @@ function init_choose_screen() {
 	add_dragging_events_parent(ROBOT_SCREEN_BG);
 	
 	var x_dist = 270;
-	var x_start = 25;
+	var x_start = 90;
 	var cur_x = x_start;
-	var cur_y = 500;
-	var rainbow = display_robot(ROBOT_SCREEN_BG, "images/robot_select/rainbow_robot.png", cur_x, cur_y); 
-	cur_x += x_dist;
-	var splash = display_robot(ROBOT_SCREEN_BG, "images/robot_select/splash_robot.png", cur_x, cur_y); 
-	cur_x += x_dist;
-	var rubber = display_robot(ROBOT_SCREEN_BG, "images/robot_select/rubber_robot.png", cur_x, cur_y); 
-	cur_x += x_dist;
-	var scrawl = display_robot(ROBOT_SCREEN_BG, "images/robot_select/scrawl_robot.png", cur_x, cur_y); 
-	cur_x += x_dist;
-	var ruler = display_robot(ROBOT_SCREEN_BG, "images/robot_select/ruler_robot_buttton.png", cur_x, cur_y); 
-	cur_x += x_dist;
-	
+	var cur_y = 546;
+	var rainbow = display_robot(ROBOT_SCREEN_BG, "images/robot_select/rainbow_robot.png", cur_x, cur_y, false);
+	cur_x += 315;
+	var splash = display_robot(ROBOT_SCREEN_BG, "images/robot_select/splash_robot.png", cur_x, cur_y, false);
+	cur_x += 352;
+	var rubber = display_robot(ROBOT_SCREEN_BG, "images/robot_select/rubber_robot.png", cur_x, cur_y, false);
+	cur_x += 352;
+	var scrawl = display_robot(ROBOT_SCREEN_BG, "images/robot_select/scrawl_robot.png", cur_x, cur_y, false);
+	cur_x += 350;
+	var ruler = display_robot(ROBOT_SCREEN_BG, "images/robot_select/ruler_robot_buttton.png", cur_x, cur_y, true);
+
+    var wifi_ruler = PIXI.Sprite.fromImage("images/robot_select/wifi_icon.png");
+    wifi_ruler.position.x = cur_x + 149;
+    wifi_ruler.position.y = 62;
+    wifi_ruler.move_on_swipe = true;
+    ROBOT_SCREEN_BG.addChild(wifi_ruler);
+
+    var name_ruler = PIXI.Sprite.fromImage("images/robot_select/ruler_name.png");
+    name_ruler.position.x = cur_x + 143;
+    name_ruler.position.y = 600;
+    name_ruler.move_on_swipe = true;
+    ROBOT_SCREEN_BG.addChild(name_ruler);
+
 	ruler.interactive = true;
 	ruler.buttonMode = true;
 	ruler.click = ruler.tap = open_application;
-	display_additional_options(ROBOT_SCREEN_BG, x_start, cur_y + 160);
+    setTimeout(function(){
+        display_additional_options(ROBOT_SCREEN_BG, 40, 694);
+    }, 300)
+
 }
 
 function drag_start_child(event)

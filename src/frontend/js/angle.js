@@ -142,8 +142,7 @@ function submit_angle_initiator(data) {
 	var target = data.target;
 	var initiator = target.initiator;
 	display_on_initiator(target.initiator, target.number.text);
-	remove_gray_shadow();
-	STAGE.removeChild(target.parent);
+    bg_clicked(null);
 	
 	var event = new CustomEvent('angle_closed');
 	document.dispatchEvent(event);
@@ -157,28 +156,29 @@ function open_angle(initiator) {
 	gray_shadow();
 	
 	var angle = PIXI.Sprite.fromImage(decoration_component["angle_bg"].image_name);
-	angle.position.x = 450;
-	angle.position.y = 150;
+	angle.position.x = 450 + angle.width / 2;
+	angle.position.y = 150 + angle.height / 2;
+    angle.anchor.set(0.5);
 	angle.interactive = true;
 	angle.remove_on_bg_click = true;
 	angle.name = "angle";
 	
 	var circle = PIXI.Sprite.fromImage(decoration_component["angle_circle"].image_name);
-	circle.position.x = 62;
-	circle.position.y = 140;
+	circle.position.x = 62 - angle.width / 2;
+	circle.position.y = 140 - angle.height / 2;
 	circle.interactive = true;
 	angle.addChild(circle);
 
 	var exit_angle = PIXI.Sprite.fromImage("images/angle/exit_angles.png");
-	exit_angle.position.x = 9;
-	exit_angle.position.y = 10;
+	exit_angle.position.x = 9 - angle.width / 2;
+	exit_angle.position.y = 10 - angle.height / 2;
 	exit_angle.interactive = true;
 	exit_angle.click = exit_angle.tap = exit_angle_clicked;
 	angle.addChild(exit_angle);
 	
 	var container = new PIXI.Container();
-	container.position.x = 62;
-	container.position.y = 140;
+	container.position.x = 62 - angle.width / 2;
+	container.position.y = 140 - angle.height / 2;
 	
 	var selected_circle = PIXI.Sprite.fromImage(decoration_component["angle_circle_selected"].image_name);
 	selected_circle.position.x = 0;
@@ -190,16 +190,16 @@ function open_angle(initiator) {
 	
 	var selected_mask = new PIXI.Graphics();
 	angle.addChild(selected_mask);
-	selected_mask.position.x = 62;
-	selected_mask.position.y = 140;
+	selected_mask.position.x = 62 - angle.width / 2;
+	selected_mask.position.y = 140 - angle.height / 2;
 	circle.selected_mask = selected_mask;
 	selected_mask.lineStyle(0);
 	
 	container.mask = selected_mask;
 	
 	var needle_rectangle = PIXI.Sprite.fromImage(decoration_component["angle_circle_transperent"].image_name);
-	needle_rectangle.position.x = 62;
-	needle_rectangle.position.y = 140;
+	needle_rectangle.position.x = 62 - angle.width / 2;
+	needle_rectangle.position.y = 140 - angle.height / 2;
 	needle_rectangle.interactive = true;
 	
 	var first_needle = create_pressable_object(decoration_component["angle_needle"].image_name);
@@ -234,14 +234,14 @@ function open_angle(initiator) {
 	
 	var number = new PIXI.extras.BitmapText('0', {font: '35px Fregat', align: "center"});
 	number.tint = 0xEE7842;
-	number.position.x = 125;
-	number.position.y = 485;
+	number.position.x = 125 - angle.width / 2;
+	number.position.y = 485 - angle.height / 2;
 	circle.number = number;
 	angle.addChild(number);
 	
 	var submit_angle = create_pressable_object("images/angle/angels_window_ok_button.png");
-	submit_angle.position.x = 233;
-	submit_angle.position.y = 469;
+	submit_angle.position.x = 233 - angle.width / 2;
+	submit_angle.position.y = 469 - angle.height / 2;
 	submit_angle.interactive = true;
 	submit_angle.buttonMode = true;
 	submit_angle.initiator = initiator;
@@ -249,7 +249,7 @@ function open_angle(initiator) {
 	submit_angle.number = number;
 	angle.addChild(submit_angle);
 	
-	STAGE.addChild(angle);
+    appear_effect(angle, angle.width, angle.height);
 	
 	set_number(circle);
 	display_current_selected(circle);

@@ -61,22 +61,102 @@ function fade_in(object, dest_alpha, wait_time, after_fade, fade_speed) {
 		.call(after_fade);
 }
 
-function fade_out(object, wait_time, after_fade, fade_speed) {
-	createjs.Tween.get(object)
-	             .wait(wait_time)
-                 .to({alpha:0}, fade_speed)
-                 .call(after_fade);
+function fade_out(object, wait_time, after_fade, fade_speed, is_shrink) {
+    if (typeof(is_shrink)==='undefined') is_shrink = false;
+    if (is_shrink) {
+        createjs.Tween.get(object)
+            .wait(wait_time)
+            .to({alpha:0, width:0, height:0}, fade_speed)
+            .call(after_fade);
+    }else {
+        createjs.Tween.get(object)
+            .wait(wait_time)
+            .to({alpha:0}, fade_speed)
+            .call(after_fade);
+    }
+
 }
 
 function appear_effect(object, dest_width, dest_height) {
 	object.alpha = 0;
 	object.width = 0;
 	object.height = 0;
+    object.is_shrink = true;
+    object.remove_func = remove_with_fade;
 	STAGE.addChild(object);
 	createjs.Tween.get(object)
 		.to({alpha:1, width:dest_width, height: dest_height}, APPEAR_SPEED)
 		.call();
 	//, createjs.Ease.cubicIn
+}
+
+function side_disappear(object) {
+    var drift_x, drift_y;
+    var speed = 100;
+    var drift = 20;
+    switch(object.direction) {
+        case "up":
+            drift_x = 0;
+            drift_y = -1 *drift;
+            break;
+        case "down":
+            drift_x = 0;
+            drift_y = drift;
+            break;
+        case "left":
+            drift_x = -1 * drift;
+            drift_y = 0;
+            break;
+        case "right":
+            drift_x = drift;
+            drift_y = 0;
+            break;
+    }
+
+    function remover(event) {
+        remove_from_stage_object(event.target);
+    }
+
+    createjs.Tween.get(object)
+        .to({alpha:0, x:object.position.x - drift_x, y: object.position.y - drift_y}, speed, createjs.Ease.cubicIn)
+        .call(remover);
+}
+
+function side_appear_effect(object, direction, drift, parent) {
+    var drift_x, drift_y;
+    if (typeof(drift)==='undefined') drift = 20;
+    if (typeof(parent)==='undefined') parent = STAGE;
+    var speed = 300;
+    switch(direction) {
+        case "up":
+            drift_x = 0;
+            drift_y = drift;
+            break;
+        case "down":
+            drift_x = 0;
+            drift_y = -1 * drift;
+            break;
+        case "left":
+            drift_x = drift;
+            drift_y = 0;
+            break;
+        case "right":
+            drift_x = -1 * drift;
+            drift_y = 0;
+            break;
+    }
+    var original_x = object.position.x;
+    var original_y = object.position.y;
+    object.position.x += drift_x;
+    object.position.y += drift_y;
+    object.alpha = 0;
+    object.direction = direction;
+    object.remove_func = side_disappear;
+    parent.addChild(object);
+    createjs.Tween.get(object)
+        .to({alpha:1, x:original_x, y: original_y}, speed, createjs.Ease.cubicIn)
+        .call();
+    //, createjs.Ease.cubicIn
 }
 
 function remove_on_any_click() {
@@ -90,7 +170,11 @@ function remove_on_any_click() {
 	}
 	
 	for (var i = 0; i < to_remove.length; i++) {
-		remove_from_stage_object(to_remove[i]);
+        if (!(typeof(to_remove[i].remove_func)==='undefined')){
+            to_remove[i].remove_func(to_remove[i]);
+        } else {
+            remove_from_stage_object(to_remove[i]);
+        }
 		if (to_remove[i].name != null) {
 			remove_names.push(to_remove[i].name);
 		}
@@ -135,6 +219,17 @@ function clear_board() {
 	add_start_code();
 }
 
+function remove_with_fade(obj) {
+    function actual_remove(obj) {
+        remove_from_stage_object(obj.target);
+    }
+    var is_shrink = true;
+    if (typeof(obj.is_shrink)==='undefined'){
+        is_shrink = false;
+    }
+    fade_out(obj, 0, actual_remove, 100, is_shrink);
+}
+
 function bg_clicked(data) {
 	var to_remove = [];
 	var remove_names = [];
@@ -144,26 +239,57 @@ function bg_clicked(data) {
 			to_remove.push(STAGE.children[i]);
 		}
 	}
-	
+
 	for (var i = 0; i < to_remove.length; i++) {
-		remove_from_stage_object(to_remove[i]);
+        if (!(typeof(to_remove[i].remove_func)==='undefined')){
+            to_remove[i].remove_func(to_remove[i]);
+        } else {
+            remove_from_stage_object(to_remove[i]);
+        }
 		if (to_remove[i].name != null) {
 			remove_names.push(to_remove[i].name);
 		}
 	}
 
-	data.stopPropagation();
-	
-	var event = new CustomEvent('back_ground_click', {'detail': remove_names});
-	document.dispatchEvent(event);
+    if (data != null) {
+        data.stopPropagation();
+        var event = new CustomEvent('back_ground_click', {'detail': remove_names});
+        document.dispatchEvent(event);
+    }
+}
+
+function press_animation(object) {
+    var counter = 3;
+    var time = 500;
+    function press_off_animation_inner(param_counter, object) {
+        display_not_pressed(object);
+        param_counter --;
+        if (param_counter != 0 ) {
+            setTimeout(press_on_animation_inner, time, param_counter, object);
+        }
+    }
+    function press_on_animation_inner(param_counter, object) {
+        display_pressed(object);
+        setTimeout(press_off_animation_inner, time, param_counter, object);
+    }
+
+    setTimeout(press_on_animation_inner, time, counter, object);
+}
+
+function display_pressed(object) {
+    object.texture = object.pressed_texture;
+}
+
+function display_not_pressed(object) {
+    object.texture = object.usual_texture;
 }
 
 function object_press(event) {
-	event.target.texture = event.target.pressed_texture;
+    display_pressed(event.target);
 }
 
 function object_release(event) {
-	event.target.texture = event.target.usual_texture;
+    display_not_pressed(event.target);
 }
 
 function get_pressed_file_name(file_name) {
@@ -186,8 +312,8 @@ function create_pressable_object(image_name) {
 	return object;
 }
 
-var GRAY_BG_ALPHA = 0.23;
-var APPEAR_SPEED = 60;
+var GRAY_BG_ALPHA = 0.35;
+var APPEAR_SPEED = 120;
 
 var GRAY_BG = PIXI.Sprite.fromImage("images/general/gray_bg.png");
 GRAY_BG.interactive = true;

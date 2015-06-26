@@ -1,8 +1,8 @@
 function init_splash_screen() {
 	var bg = PIXI.Sprite.fromImage("images/splash_screen/white_bg.png");
 	var logo = PIXI.Sprite.fromImage("images/splash_screen/logo.png");
-	logo.position.x = 400;
-	logo.position.y = 300;
+	logo.position.x = 436;
+	logo.position.y = 242;
 	bg.addChild(logo);
 	STAGE.addChild(bg);
 	

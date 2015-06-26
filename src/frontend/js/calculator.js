@@ -15,6 +15,9 @@ function add_digit(data) {
 		target.number.updateText();
 		target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 	}
+
+    var event = new CustomEvent('key_pressed');
+    document.dispatchEvent(event);
 }
 
 function remove_all(data) {
@@ -26,6 +29,8 @@ function remove_all(data) {
 		target.number.updateText();
 		target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 	}
+    var event = new CustomEvent('key_pressed');
+    document.dispatchEvent(event);
 }
 
 function remove_last(data) {
@@ -43,6 +48,8 @@ function remove_last(data) {
 			target.number.position.x = target.number.maximal_position.x - target.number.textWidth;
 		}
 	}
+    var event = new CustomEvent('key_pressed');
+    document.dispatchEvent(event);
 }
 
 function submit_number(data) {
@@ -50,8 +57,7 @@ function submit_number(data) {
 	var target = data.target;
 	if (!target.state.initial_state) {
 		display_on_initiator(target.initiator, target.number.text);
-		remove_gray_shadow();
-		STAGE.removeChild(target.parent);
+		bg_clicked(null);
 		
 		var event = new CustomEvent('calculator_closed', {'detail': target.initiator.name});
 		document.dispatchEvent(event);
@@ -75,20 +81,16 @@ function open_calculator(initiator) {
 	
 	var state = new CalculatorState();
 	
-	calc_window.position.x = 465;
-	calc_window.position.y = 102;
+	calc_window.position.x = 465 + calc_window.width / 2;
+	calc_window.position.y = 102 + calc_window.height / 2;
 	calc_window.interactive = true;
 	calc_window.remove_on_bg_click = true;
+    calc_window.anchor.set(0.5);
 	calc_window.name = "calculator";
 
-	calc_field.position.x = curr_x_position;
-	calc_field.position.y = curr_y_position;
+	calc_field.position.x = curr_x_position - calc_window.width / 2;
+	calc_field.position.y = curr_y_position - calc_window.height / 2;
 	calc_window.addChild(calc_field);
-	
-	for (var key in PIXI.extras.BitmapText.fonts) {
-		console.log(key);
-		console.log(PIXI.extras.BitmapText.fonts[key]);
-	}
 	
 	var number = new PIXI.extras.BitmapText('0', {font: '30px Fregat', align: "center"});
 	number.tint = 0xEE7842;
@@ -105,8 +107,8 @@ function open_calculator(initiator) {
 		curr_x_position = x_offset;
 		for (var j = 1; j <=3; j ++) {
 			var single_button = create_pressable_object(decoration_component["calculator_digit_{0}".format(i * 3 + j)].image_name);
-			single_button.position.x = curr_x_position;
-			single_button.position.y = curr_y_position;
+			single_button.position.x = curr_x_position - calc_window.width / 2;
+			single_button.position.y = curr_y_position - calc_window.height / 2;
 			single_button.value = i * 3 + j;
 			single_button.interactive = true;
 			single_button.number = number;
@@ -126,8 +128,8 @@ function open_calculator(initiator) {
 		var name = last_line[j][0];
 		var on_click = last_line[j][1];
 		var single_button = create_pressable_object(decoration_component[name].image_name);
-		single_button.position.x = curr_x_position;
-		single_button.position.y = curr_y_position;
+		single_button.position.x = curr_x_position - calc_window.width / 2;
+		single_button.position.y = curr_y_position - calc_window.height / 2;
 		single_button.interactive = true;
 		single_button.number = number;
 		single_button.state = state;
@@ -143,8 +145,8 @@ function open_calculator(initiator) {
 	
 	curr_x_position = x_offset;
 	var single_button = create_pressable_object(decoration_component["calculator_window_ok_button"].image_name);
-	single_button.position.x = curr_x_position;
-	single_button.position.y = curr_y_position;
+	single_button.position.x = curr_x_position - calc_window.width / 2;
+	single_button.position.y = curr_y_position - calc_window.height / 2;
 	single_button.interactive = true;
 	single_button.number = number;
 	single_button.state = state;
@@ -153,13 +155,13 @@ function open_calculator(initiator) {
 	calc_window.addChild(single_button);
 
 	var exit_calculator = PIXI.Sprite.fromImage("images/calculator/exit_calculator.png");
-	exit_calculator.position.x = 11;
-	exit_calculator.position.y = 10;
+	exit_calculator.position.x = 11 - calc_window.width / 2;
+	exit_calculator.position.y = 10 - calc_window.height / 2;
 	exit_calculator.interactive = true;
 	exit_calculator.click = exit_calculator.tap = exit_calculator_clicked;
 	calc_window.addChild(exit_calculator);
 	
-	STAGE.addChild(calc_window);
+    appear_effect(calc_window, calc_window.width, calc_window.height);
 	
 	var event = new CustomEvent('calculator_openned', {'detail': number});
 	document.dispatchEvent(event);
