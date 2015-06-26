@@ -1,6 +1,7 @@
 from logger import RoboLogger
 import json
 import time
+import os
 import threading
 import platform
 from flask import Flask, send_from_directory, request
@@ -82,5 +83,6 @@ if __name__ == "__main__":
         print "Debug mode using dummy interface"
         app.run(debug = True)
     else:
+        os.chdir("/home/pi/drawbots/roborob/src/backend")
         print "Running in production"
         app.run(host = "0.0.0.0", port = 80)
