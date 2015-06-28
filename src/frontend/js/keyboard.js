@@ -70,6 +70,8 @@ function add_period(event) {
 function submit_keyboard_text(event) {
 	var target = event.target;	
 	var initiator = target.parent.initiator;
+    var event2 = new CustomEvent('key_pressed');
+    document.dispatchEvent(event2);
     bg_clicked(null);
 	
 	if (initiator.on_keyboard_finish != null) {
@@ -80,8 +82,8 @@ function submit_keyboard_text(event) {
 		initiator.on_keyboard_finish(initiator, text_to_send);
 	}
 	
-	var event = new CustomEvent('keyboard_closed', {'detail': initiator.name});
-	document.dispatchEvent(event);
+	var event1 = new CustomEvent('keyboard_closed', {'detail': initiator.name});
+	document.dispatchEvent(event1);
 }
 
 function add_line (parent_obj, line, x, y, overwrite_dist) {

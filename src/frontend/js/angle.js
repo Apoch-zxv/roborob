@@ -143,9 +143,12 @@ function submit_angle_initiator(data) {
 	var initiator = target.initiator;
 	display_on_initiator(target.initiator, target.number.text);
     bg_clicked(null);
+
+    var event = new CustomEvent('key_pressed');
+    document.dispatchEvent(event);
 	
-	var event = new CustomEvent('angle_closed');
-	document.dispatchEvent(event);
+	var event1 = new CustomEvent('angle_closed');
+	document.dispatchEvent(event1);
 }
 
 function exit_angle_clicked(event) {

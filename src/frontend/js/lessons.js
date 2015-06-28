@@ -151,10 +151,21 @@ function square_lesson_options_window(data) {
 }
 
 function square_lesson_calculator(data) {
-	var number = data.detail;
-	number.text = "Type 20";
-	number.updateText();
-	number.position.x = number.maximal_position.x - number.textWidth;
+    switch(data.name) {
+        case "go_forward":
+            var number = data.detail;
+            number.text = "Type 20";
+            number.updateText();
+            number.position.x = number.maximal_position.x - number.textWidth;
+            break;
+        case "loop_end":
+            var number = data.detail;
+            number.text = "0";
+            number.updateText();
+            number.position.x = number.maximal_position.x - number.textWidth;
+            break;
+    }
+
 }
 
 function square_lesson_calculator_closed(data) {
@@ -292,6 +303,8 @@ function add_lesson_icons() {
 		lesson_select.lesson = lesson;
 		lesson_select.not_remove_when_cleared = true;
 		lesson.object = lesson_select;
+        lesson_select.visible = false;
+        lesson_select.visible_draw_board = true;
 		lesson_select.click = lesson_select.tap = select_lesson_click;
 		add_display_object(lesson_select, "lesson_select");
 

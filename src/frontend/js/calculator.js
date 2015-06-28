@@ -58,9 +58,12 @@ function submit_number(data) {
 	if (!target.state.initial_state) {
 		display_on_initiator(target.initiator, target.number.text);
 		bg_clicked(null);
+
+        var event = new CustomEvent('key_pressed');
+        document.dispatchEvent(event);
 		
-		var event = new CustomEvent('calculator_closed', {'detail': target.initiator.name});
-		document.dispatchEvent(event);
+		var event1 = new CustomEvent('calculator_closed', {'detail': target.initiator.name});
+		document.dispatchEvent(event1);
 	}
 }
 
@@ -164,5 +167,6 @@ function open_calculator(initiator) {
     appear_effect(calc_window, calc_window.width, calc_window.height);
 	
 	var event = new CustomEvent('calculator_openned', {'detail': number});
+	event.name = initiator.name;
 	document.dispatchEvent(event);
 }

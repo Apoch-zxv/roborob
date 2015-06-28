@@ -54,12 +54,44 @@ function display_additional_options(parent, x, y) {
 
 function open_application() {
 	STAGE.removeChild(ROBOT_SCREEN_BG);
-	init_draw_board();
+    show_draw_board();
+}
+
+function start_wifi_animation(cur_x) {
+    var textures = [], i;
+    for (i = 0; i < 30; i++) {
+        var texture = PIXI.Texture.fromImage("images/robot_select/Comp 1_{0}.png".format(i));
+        textures.push(texture);
+    }
+
+    var wifi_ruler = new PIXI.extras.MovieClip(textures);
+    wifi_ruler.position.x = cur_x + 149;
+    wifi_ruler.position.y = 62;
+    wifi_ruler.move_on_swipe = true;
+    wifi_ruler.animationSpeed = 0.5;
+    wifi_ruler.play();
+    ROBOT_SCREEN_BG.addChild(wifi_ruler);
+}
+
+function show_choose_robot() {
+    setTimeout(function(){
+        display_additional_options(ROBOT_SCREEN_BG, 40, 694);
+    }, 300);
+}
+
+function make_choose_window_visible() {
+    ROBOT_SCREEN_BG.visible = true;
+    setTimeout(draw_board_make_visible, 1000);
+
+
 }
 
 function init_choose_screen() {
+    init_draw_board();
+
 	ROBOT_SCREEN_BG = PIXI.Sprite.fromImage("images/robot_select/robots_screen_BG.png");
 	ROBOT_SCREEN_BG.interactive = true;
+    ROBOT_SCREEN_BG.visible = false;
 	STAGE.addChild(ROBOT_SCREEN_BG);
 	
 	add_dragging_events_parent(ROBOT_SCREEN_BG);
@@ -78,11 +110,12 @@ function init_choose_screen() {
 	cur_x += 350;
 	var ruler = display_robot(ROBOT_SCREEN_BG, "images/robot_select/ruler_robot_buttton.png", cur_x, cur_y, true);
 
-    var wifi_ruler = PIXI.Sprite.fromImage("images/robot_select/wifi_icon.png");
-    wifi_ruler.position.x = cur_x + 149;
-    wifi_ruler.position.y = 62;
-    wifi_ruler.move_on_swipe = true;
-    ROBOT_SCREEN_BG.addChild(wifi_ruler);
+    //var wifi_ruler = PIXI.Sprite.fromImage("images/robot_select/wifi_icon.png");
+    //wifi_ruler.position.x = cur_x + 149;
+    //wifi_ruler.position.y = 62;
+    //wifi_ruler.move_on_swipe = true;
+    //ROBOT_SCREEN_BG.addChild(wifi_ruler);
+    start_wifi_animation(cur_x);
 
     var name_ruler = PIXI.Sprite.fromImage("images/robot_select/ruler_name.png");
     name_ruler.position.x = cur_x + 143;
@@ -93,9 +126,6 @@ function init_choose_screen() {
 	ruler.interactive = true;
 	ruler.buttonMode = true;
 	ruler.click = ruler.tap = open_application;
-    setTimeout(function(){
-        display_additional_options(ROBOT_SCREEN_BG, 40, 694);
-    }, 300)
 
 }
 

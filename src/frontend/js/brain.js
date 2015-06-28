@@ -710,7 +710,10 @@ function start_keep_alive() {
 }
 
 
-function add_start_code() {
+function add_start_code(visibility) {
+    if (typeof(visibility)==='undefined'){
+        visibility = true;
+    }
 	//var start_code = PIXI.Sprite.fromImage(decoration_component["start_code"].image_name);
 	var start_code = create_pressable_object(decoration_component["start_code"].image_name);
 	start_code.position.x = 40;
@@ -718,6 +721,8 @@ function add_start_code() {
 
 	start_code.interactive = true;
 	start_code.buttonMode = true;
+    start_code.visible = visibility;
+    start_code.visible_draw_board = true;
 
 	start_code.click = start_code.tap = open_options_window;
 	add_stage_object(start_code, "start_code");
@@ -765,20 +770,37 @@ function show_first_lesson(event) {
 	select_lesson_click(next_event)
 }
 
+function show_draw_board() {
+    welcome_window();
+}
+
+function draw_board_make_visible() {
+    var array_length = STAGE.children.length;
+    for (var i = 0; i < array_length; i++) {
+        if (STAGE.children[i].visible_draw_board) {
+            STAGE.children[i].visible = true;
+        }
+    }
+}
+
 function init_draw_board() {
 	// create a texture from an image path
 	var bg = PIXI.Sprite.fromImage("images/general/BG.png");
 	bg.interactive = true;
 	bg.click = bg.tab = bg_clicked;
 	bg.not_remove_when_cleared = true;
+    bg.visible = false;
+    bg.visible_draw_board = true;
 	STAGE.addChild(bg);
 
-	add_start_code();
+	add_start_code(false);
 
 	var robot_face = PIXI.Sprite.fromImage(decoration_component["robot_face"].image_name);
 	robot_face.position.x = 94;
 	robot_face.position.y = 39;
 	robot_face.not_remove_when_cleared = true;
+    robot_face.visible = false;
+    robot_face.visible_draw_board = true;
 	add_display_object(robot_face, "robot_face");
 
 	var back_button = create_pressable_object("images/general/back_button.png");
@@ -788,6 +810,8 @@ function init_draw_board() {
     back_button.interactive = true;
     back_button.buttonMode = true;
     back_button.click = back_button.tap = init_choose_screen;
+    back_button.visible = false;
+    back_button.visible_draw_board = true;
 	add_display_object(back_button, "back_button");
 
 	var execute_code = create_pressable_object("images/general/run_button_status_on.png");
@@ -796,6 +820,8 @@ function init_draw_board() {
 	execute_code.interactive = true;
 	execute_code.buttonMode = true;
 	execute_code.not_remove_when_cleared = true;
+    execute_code.visible = false;
+    execute_code.visible_draw_board = true;
 
 	execute_code.click = execute_code.tap = submit_code;
 	add_display_object(execute_code, "execute_code");
@@ -803,8 +829,6 @@ function init_draw_board() {
 	add_lesson_icons();
 
 	document.addEventListener("back_ground_click", show_first_lesson);
-
-	welcome_window();
 }
 
 function play_sound(event) {
@@ -869,15 +893,15 @@ function init() {
 	for (var i = 0; i < arrayLength; i++) {
 	    loader.add(assetsToLoad[i], assetsToLoad[i]);
 	}
+    loader.add("images/robot_select/robots_screen_BG.png", "images/robot_select/robots_screen_BG.png");
     loader.add("images/general/window_ok_button.png", "images/general/window_ok_button.png");
 	loader.add("fonts/fregat.fnt", { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT });
 	loader.load(function () {
     	console.log('Finished loading');
-        init_draw_board();
 	});
 
     start_keep_alive();
-    //init_choose_screen();
+    init_splash_screen();
 	//init_splash_screen();
 
 	//createjs.Ticker.timingMode = createjs.Ticker.RAF;
