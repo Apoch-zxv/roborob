@@ -72,7 +72,7 @@ def length_to_ts(length):
     return int(length) * 0.05
 
 def degree_to_ts(length):
-    return int(length) * (0.39 / 90.)
+    return int(length) * (0.78 / 90.)
 
 
 def interface_exposure():
