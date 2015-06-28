@@ -77,11 +77,11 @@ def turn_left(ts):
     after()
 
 def length_to_ts(length):
-    1
+    return length * 0.05
 
 
 def degree_to_ts(length):
-    0.78
+    return length * (0.78 / 90.)
 
 
 def interface_exposure():
