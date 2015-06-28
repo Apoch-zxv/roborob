@@ -46,7 +46,9 @@ class RoboRobRequestHandler(object):
 
     def handle_code_execution(self, code_json):
         self._logger.debug("Received code: %s", code_json)
+        self._interface["before"].function()
         self.inner_handle_code_execution(code_json)
+        self._interface["after"].function()
         return {"status": "success"}
 
     def inner_handle_code_execution(self, code_json):
