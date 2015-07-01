@@ -900,7 +900,7 @@ function init() {
     	console.log('Finished loading');
 	});
 
-    document.requestFullscreen();
+
 
     start_keep_alive();
     init_splash_screen();

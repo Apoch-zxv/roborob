@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #000000;
+    cursor: url(../images/general/touch_icon.png), auto;
 }
 
 @font-face {
