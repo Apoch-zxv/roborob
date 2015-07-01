@@ -299,7 +299,7 @@ function add_lesson_icons() {
 		lesson_select.position.x = cur_x;
 		lesson_select.position.y = 59;
 		lesson_select.interactive = true;
-		lesson_select.buttonMode = true;
+        //lesson_select.buttonMode = true;
 		lesson_select.lesson = lesson;
 		lesson_select.not_remove_when_cleared = true;
 		lesson.object = lesson_select;

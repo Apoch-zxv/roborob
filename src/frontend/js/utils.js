@@ -26,7 +26,7 @@ function add_ok_button(parent, x, y, on_click) {
 	ok_button.position.x = x;
 	ok_button.position.y = y;
 	ok_button.interactive = true;
-	ok_button.buttonMode = true;
+    //ok_button.buttonMode = true;
 	ok_button.click = ok_button.tap = on_click;
 	parent.addChild(ok_button);
 }

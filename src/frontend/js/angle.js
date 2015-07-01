@@ -246,7 +246,7 @@ function open_angle(initiator) {
 	submit_angle.position.x = 233 - angle.width / 2;
 	submit_angle.position.y = 469 - angle.height / 2;
 	submit_angle.interactive = true;
-	submit_angle.buttonMode = true;
+	//submit_angle.buttonMode = true;
 	submit_angle.initiator = initiator;
 	submit_angle.click = submit_angle.tap = submit_angle_initiator;
 	submit_angle.number = number;

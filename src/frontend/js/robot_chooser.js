@@ -124,7 +124,7 @@ function init_choose_screen() {
     ROBOT_SCREEN_BG.addChild(name_ruler);
 
 	ruler.interactive = true;
-	ruler.buttonMode = true;
+	//ruler.buttonMode = true;
 	ruler.click = ruler.tap = open_application;
 
 }

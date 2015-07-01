@@ -81,7 +81,7 @@ def static_proxy(path="index.html"):
 
 
 if __name__ == "__main__":
-    if False and platform.node() != "DrawBot":
+    if platform.node() != "DrawBot":
         print "Debug mode using dummy interface"
         app.run(debug = True)
     else:

@@ -141,7 +141,7 @@ function create_single_option(initiating_object, component, x_offset, y_offset, 
 	single_option.position.x = x_offset;
 	single_option.position.y = y_offset;
 	single_option.interactive = true;
-	single_option.buttonMode = true;
+    //single_option.buttonMode = true;
 	single_option.to_add_image = component;
 	single_option.previous_connector = previous_connector;
 	single_option.initiating_object = initiating_object;
@@ -156,7 +156,7 @@ function add_next_button_to_the_right(current_object, is_add_to_stage_param) {
 	start_code.position.y = MAIN_Y_AXIS - decoration_component["add_block"].connector_height_px;
 	
 	start_code.interactive = true;
-	start_code.buttonMode = true;
+    //start_code.buttonMode = true;
 	
 	start_code.click = start_code.tap = open_options_window;
 	if (is_add_to_stage) {
@@ -213,7 +213,7 @@ function add_bigger_image(data) {
 	bigger_image.position.x = this.parent.position.x - X_CORRECTION_FACTOR;
 	bigger_image.position.y = MAIN_Y_AXIS - component.connector_height_px;
 	bigger_image.interactive = true;
-	bigger_image.buttonMode = true;
+    //bigger_image.buttonMode = true;
 	bigger_image.previous_connector = this.previous_connector;
 	add_dragging_events(bigger_image);
 	
@@ -720,7 +720,7 @@ function add_start_code(visibility) {
 	start_code.position.y = MAIN_Y_AXIS + decoration_component["start_code"].connector_height_px;
 
 	start_code.interactive = true;
-	start_code.buttonMode = true;
+    //start_code.buttonMode = true;
     start_code.visible = visibility;
     start_code.visible_draw_board = true;
 
@@ -808,7 +808,7 @@ function init_draw_board() {
 	back_button.position.y = 50;
 	back_button.not_remove_when_cleared = true;
     back_button.interactive = true;
-    back_button.buttonMode = true;
+    //back_button.buttonMode = true;
     back_button.click = back_button.tap = init_choose_screen;
     back_button.visible = false;
     back_button.visible_draw_board = true;
@@ -818,7 +818,7 @@ function init_draw_board() {
 	execute_code.position.x = 1079;
 	execute_code.position.y = 594;
 	execute_code.interactive = true;
-	execute_code.buttonMode = true;
+    //execute_code.buttonMode = true;
 	execute_code.not_remove_when_cleared = true;
     execute_code.visible = false;
     execute_code.visible_draw_board = true;
